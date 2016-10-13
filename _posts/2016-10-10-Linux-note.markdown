@@ -4,7 +4,7 @@ title:      "Linux学习笔记"
 subtitle:   "记忆低能儿，杂乱无章的笔记"
 data:       2016-10-11
 authori:    "silence"
-header-img: "img/post-Linux-note.jpg"
+header-img: "img/post-ubuntu-logo-water-1920x1080.png"
 tags:
     - os
     - Linux
@@ -19,11 +19,11 @@ tags:
 
 ## Catagory
 
-1. [目录结构](#目录结构)
-2. [bash快捷键](#bash快捷键)
-3. [常用命令](#常用命令)
-4. [字符](#字符)
-5. [查找和筛选](#查找和筛选)
+1. [目录结构](#section)
+2. [bash快捷键](#bash)
+3. [常用命令](#section-1)
+4. [字符](#section-2)
+5. [查找和筛选](#section-3)
 
 
 

@@ -10,9 +10,9 @@
     <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Welcome to Hux Blog - silence |  Blog</title>
+    <title>Linux学习笔记 - silence |  Blog</title>
 
-    <link rel="canonical" href="/2015/01/29/hello-2015/">
+    <link rel="canonical" href="/2016/10/10/Linux-note/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -125,12 +125,12 @@
 
     <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="/img/post-bg-2015.jpg" width="0" height="0"> -->
+<!-- <img src="/img/post-ubuntu-logo-water-1920x1080.png" width="0" height="0"> -->
 
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('/img/post-bg-2015.jpg')
+        background-image: url('/img/post-ubuntu-logo-water-1920x1080.png')
     }
 </style>
 <header class="intro-header" >
@@ -140,15 +140,19 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#生活" title="生活">生活</a>
+                        <a class="tag" href="/tags/#os" title="os">os</a>
+                        
+                        <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        
+                        <a class="tag" href="/tags/#笔记" title="笔记">笔记</a>
                         
                     </div>
-                    <h1>Welcome to Hux Blog</h1>
+                    <h1>Linux学习笔记</h1>
                     
                     
-                    <h2 class="subheading"> "Hello World, Hello Blog"</h2>
+                    <h2 class="subheading">记忆低能儿，杂乱无章的笔记</h2>
                     
-                    <span class="meta">Posted by Hux on January 29, 2015</span>
+                    <span class="meta">Posted by 沉默者说 on October 10, 2016</span>
                 </div>
             </div>
         </div>
@@ -166,72 +170,280 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<blockquote>
-  <p>“Yeah It’s on. ”</p>
+				<h2 id="catagory">Catagory</h2>
+
+<ol>
+  <li><a href="#section">目录结构</a></li>
+  <li><a href="#bash">bash快捷键</a></li>
+  <li><a href="#section-1">常用命令</a></li>
+  <li><a href="#section-2">字符</a></li>
+  <li><a href="#section-3">查找和筛选</a></li>
+</ol>
+
+<h2 id="section">目录结构</h2>
+
+<blockquote>
+  <p>Linux目录的主要功能</p>
 </blockquote>
 
-<h2 id="section">前言</h2>
-
-<p>Hux 的 Blog 就这么开通了。</p>
-
-<p><a href="#build">跳过废话，直接看技术实现 </a></p>
-
-<p>2015 年，Hux 总算有个地方可以好好写点东西了。</p>
-
-<p>作为一个程序员， Blog 这种轮子要是挂在大众博客程序上就太没意思了。一是觉得大部分 Blog 服务都太丑，二是觉得不能随便定制不好玩。之前因为太懒没有折腾，结果就一直连个写 Blog 的地儿都没有。</p>
-
-<p>在玩了一段时间知乎之后，答题的快感又激起了我开博客的冲动。之前的<a href="http://huangxuan.me/portfolio">个人网站</a>是作品集形式的（现在集成进来了），并不适合用来写博文，一不做二不休，花一天搞一个吧！</p>
-
-<p id="build"></p>
-<hr />
-
-<h2 id="section-1">正文</h2>
-
-<p>接下来说说搭建这个博客的技术细节。</p>
-
-<p>正好之前就有关注过 <a href="https://pages.github.com/">GitHub Pages</a> + <a href="http://jekyllrb.com/">Jekyll</a> 快速 Building Blog 的技术方案，非常轻松时尚。</p>
-
-<p>其优点非常明显：</p>
-
 <ul>
-  <li><strong>Markdown</strong> 带来的优雅写作体验</li>
-  <li>非常熟悉的 Git workflow ，<strong>Git Commit 即 Blog Post</strong></li>
-  <li>利用 GitHub Pages 的域名和免费无限空间，不用自己折腾主机
-    <ul>
-      <li>如果需要自定义域名，也只需要简单改改 DNS 加个 CNAME 就好了</li>
-    </ul>
-  </li>
-  <li>Jekyll 的自定制非常容易，基本就是个模版引擎</li>
+  <li>/bin <strong>普通用户可使用的指令</strong></li>
+  <li>/boot 启动文件</li>
+  <li>/dev 设备文件</li>
+  <li>/etc 系统和服务设置文件（若要修改，先备份）</li>
+  <li>/home 用户目录</li>
+  <li>/lib 系统几相关软件依赖的库文件</li>
+  <li>/lost+found 若系统意外关机后，损失文件及文件碎片所放置地点。系统重启会自动修复</li>
+  <li>/media 挂载光驱U盘等</li>
+  <li>/mnt 临时挂载磁盘设备</li>
+  <li>/opt 额外和需要编译安装的软件放置处</li>
+  <li>/root root 用户目录</li>
+  <li>/sbin 系统管理命令</li>
+  <li>/tmp 存放系统和进程产生的临时文件</li>
+  <li>/user 帮助文件和配置文件及程序</li>
+  <li>/var 多类型文件 如日志文件和数据库文件</li>
 </ul>
 
-<p>本来觉得最大的缺点可能是 GitHub 在国内访问起来太慢，所以第二天一起床就到 GitCafe(Chinese GitHub Copy) 迁移了一个<a href="http://huxpro.gitcafe.io">镜像</a>出来，结果还是巨慢。</p>
+<h2 id="bash">bash快捷键</h2>
 
-<p>哥哥可是个前端好嘛！ 果断开 Chrome DevTool 查了下网络请求，原来是 <strong>pending 在了 Google Fonts</strong> 上，页面渲染一直被阻塞到请求超时为止，难怪这么慢。<br />
-忍痛割爱，只好把 Web Fonts 去了（反正超时看到的也只能是 fallback ），果然一下就正常了，而且 GitHub 和 GitCafe 对比并没有感受到明显的速度差异，虽然 github 的 ping 值明显要高一些，达到了 300ms，于是用 DNSPOD 优化了一下速度。</p>
+<blockquote>
+  <p>多用快捷键，特别是手残之人</p>
+</blockquote>
 
-<hr />
+<ul>
+  <li>Ctrl+B <strong>向前移动光标一个字符</strong></li>
+  <li>Ctrl+F 向后移动光标一个字符</li>
+  <li>Ctrl+A <strong>移动光标到行首</strong></li>
+  <li>
+    <p>Ctrl+E 移动光标到行尾</p>
+  </li>
+  <li>Ctrl+D 删除光标处字符</li>
+  <li>Ctrl+H 删除光标的前一个字符</li>
+  <li>Ctrl+U <strong>删除当前光标到行首</strong></li>
+  <li>Ctrl+K 删除当前光标到行尾的所有字符</li>
+  <li>
+    <p>Ctrl+L <strong>清屏</strong></p>
+  </li>
+  <li>绑定快捷键和命令<em>bind</em>
+    <ul>
+      <li>bind -P 查看以绑定的快捷键</li>
+    </ul>
+  </li>
+  <li>history 命令行历史</li>
+  <li>alias 命令别名功能</li>
+</ul>
 
-<p>配置的过程中也没遇到什么坑，基本就是 Git 的流程，相当顺手</p>
+<h2 id="section-1">常用命令</h2>
 
-<p>大的 Jekyll 主题上直接 fork 了 Clean Blog（这个主题也相当有名，就不多赘述了。唯一的缺点大概就是没有标签支持，于是我给它补上了。）</p>
+<ul>
+  <li>ls
+    <ul>
+      <li>-d显示目录</li>
+      <li>-a显示全部</li>
+      <li>-l显示详细</li>
+      <li>-S文件大小排序</li>
+      <li>-k显示文件大小以k自己为单位</li>
+      <li>-h必须配合l使用，更加直观</li>
+    </ul>
+  </li>
+</ul>
 
-<p>本地调试环境需要 <code class="highlighter-rouge">gem install jekyll</code>，结果 rubygem 的源居然被墙了……后来手动改成了我大淘宝的镜像源才成功</p>
+<blockquote>
+  <p>ll(代表ls -l)
+-：表示普通文件
+d：表示目录
+l：表示链接文件
+b：表示块文件，通常是磁盘或者分区
+c：字符设备文件，通常是键盘、鼠标等
+p：管道文件</p>
+</blockquote>
 
-<p>Theme 的 CSS 是基于 Bootstrap 定制的，看得不爽的地方直接在 Less 里改就好了（平时更习惯 SCSS 些），<strong>不过其实我一直觉得 Bootstrap 在移动端的体验做得相当一般，比我在淘宝参与的团队 CSS 框架差多了……</strong>所以为了体验，也补了不少 CSS 进去</p>
+<ul>
+  <li>
+    <p>ln 文件链接命令
+  ln [option] target link_name
+  加-s创建软连接（快捷方式），不加创建硬链接（副本）</p>
+  </li>
+  <li>touch 创建文件命令</li>
+  <li>mkdir 创建目录 -p选项可以同事创建一个路径中多个目录</li>
+  <li>mv 移动文件和目录（重命名）</li>
+  <li>cp复制文件，复制目录加-R选项</li>
+  <li>rm 删除文件目录（-R）<strong>不可恢复</strong>，删除应加-i提示</li>
+  <li>file 查看文件类型命令</li>
+  <li>cat 查看文件内容</li>
+  <li>tail 从文本尾查看文本内容（f选项动态查看，n选项指定行数）</li>
+  <li>head 从文件头查看文本内容（n选项指定行数）</li>
+  <li>more 分屏显示文本内容（enter显示下一行，space显示下一屏，b显示上一屏，q退出）、、</li>
+  <li>less 类似more，但更方便</li>
+  <li>diff 比较两个文件的内容</li>
+  <li>wc 文本统计命令</li>
+  <li>date查看日期时间命令
+  修改日期时间命令date和clock（将当前时间写入硬件时钟）</li>
+  <li>
+    <p>cal查看日历命令</p>
+  </li>
+  <li>联线用户命令
+    <ul>
+      <li>who 查看当前联线的用户</li>
+      <li>finger 查看登录到系统的用户及相关信息</li>
+      <li>w 查看正在使用系统的用户
+        <ul>
+          <li>who 主要用于一般性查看，finger侧重用户的个人详细信息，w输出用户使用系统的情况</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
 
-<p>最后就进入了耗时反而最长的<strong>做图、写字</strong>阶段，也算是进入了<strong>写博客</strong>的正轨，因为是类似 Hack Day 的方式去搭这个站的，所以折腾折腾着大半夜就过去了。</p>
+<blockquote>
+  <p>与联线用户通信的命令wall write mesg
+wall广播所有用户
+write私聊
+mesg n拒绝消息</p>
+</blockquote>
 
-<p>第二天考虑中文字体的渲染，fork 了 <a href="http://www.typeisbeautiful.com/">Type is Beautiful</a> 的 <code class="highlighter-rouge">font</code> CSS，调整了字号，适配了 Win 的渣渲染，中英文混排效果好多了。</p>
+<ul>
+  <li>
+    <p>断开联线用户命令fuser</p>
+  </li>
+  <li>
+    <p>su 临时切换用户命令</p>
+  </li>
+</ul>
 
-<h2 id="section-2">后记</h2>
+<blockquote>
+  <p>sudo 以root权限执行命令</p>
+</blockquote>
 
-<p>回顾这个博客的诞生，纯粹是出于个人兴趣。在知乎相关问题上回答并获得一定的 star 后，我决定把这个博客主题当作一个小小的开源项目来维护。</p>
+<ul>
+  <li>which 搜索命令：从<strong>环境变量</strong>中搜索文件位置</li>
+  <li>locate 文件搜索命令，更快搜索则需更新索引数据库（updatedb）</li>
+  <li>whereis 特殊文件搜索命令</li>
+  <li>
+    <p>apropos 关键字搜索命令</p>
+  </li>
+  <li>输入输出相关命令
+    <ul>
+      <li>echo 输出</li>
+      <li>read 接收用户输入命令</li>
+      <li>tee 显示并保存文本命令</li>
+    </ul>
+  </li>
+</ul>
 
-<p>在经历 v1.0 - v1.5 的蜕变后，这个博客主题愈发完整，不但增加了诸多 UI 层的优化（opinionated）；在代码层面，更加丰富的配置项也使得这个主题拥有了更好的灵活性与可拓展性。而作为一个开源项目，我也积极的为其完善文档与解决 issue。</p>
+<blockquote>
+  <p>管道和输入输出重定向
+command1 | command2 | command3 …
+先执行command1，并通过管道将输出结果传递给command2处理……
+“"”管道后面的命令总是使用前面的命令输出作为命令输入”””
+重定向输出的操作符是 “&gt;” “»“,表示将结果写入，追加到指定文件中
+重定向输出的操作符是 “&lt;” “«“,表示将结果输入，追加到指定文件中
+错误重定向的操作符是 “2»” “2&gt;”
+变量 <strong>$?</strong> 保存的是上一个命令的退出状态，数字0表示上一个命令执行成功，非零表示出现错误</p>
+</blockquote>
 
-<p>如果你恰好逛到了这里，希望你也能喜欢这个博客主题。</p>
+<ul>
+  <li>邮件命令</li>
+</ul>
 
-<p>—— Hux 后记于 2015.10</p>
+<blockquote>
+  <p>未配置互联网邮箱，期待ing</p>
+</blockquote>
+
+<p>mail
+格式：mail [option] [-s subject] [-c c_adress] [-b b_adress] user [-a file]….
+常用选项：
+	n：不读入设置文件/etc/mail.rc(这个文件允许用户使用外部地址而不是系统自带的sendmail发送邮件)。
+	s：设置邮件的主题信息
+	c：使用一个密件抄送列表
+	b：使用一个抄送列表
+用法事例：
+	（1）发送邮件时，通常将邮件正文放入一个文件夹内，然后使用重定向的方式读取并发送文件中的内容。例如要将文件net_info中的内容发送给用户root和user1，并将邮件主题设为net info：
+mail -s “net info” root,user1 &lt;net_info</p>
+
+<p>查看邮件
+mail [option]
+常用选项：
+	h：查看邮件标题
+	d：使用该命令加序号可以删除指定邮件
+	f：查看光标指向的邮件
+	n：跳转到指定序号的邮件
+	q：退出并将已经阅读的邮件存入文件~/mbox中
+	x：退出
+	!：允许使用shell命令</p>
+
+<ul>
+  <li>启动新shell命令exec
+格式：exec shell-command
+exec执行时，会使用新的shell替代当前的shell，如果没有特别指明，exec将会在命令执行完毕后退出新启动的shell。在实际应用中，exec长用来处理文件描述符</li>
+</ul>
+
+<h2 id="section-2">字符</h2>
+
+<ul>
+  <li>
+    <p>正则表达式</p>
+
+    <ul>
+      <li>双引号
+通常用来表示字符串，可用来屏蔽特殊字符</li>
+      <li>单引号
+和双引号相似，单双交替使用</li>
+      <li>反引号
+在字符串内表示命令</li>
+      <li>美元符号
+引用变量，还可以用来置换一个命令，使用美元符号置换命令时，bash会将相应的命令放入子shell执行</li>
+      <li>反斜线
+转义字符</li>
+      <li>问号
+通配符，代表一个字符</li>
+      <li>星号
+通配符，代表多个字符</li>
+      <li>[]
+正则中的普通字符组</li>
+      <li>[!]
+排除字符组</li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>使用查找模式是，将其放入”//”中，然后放入命令
+.通配符
+*重复
+^行首匹配符
+$行尾匹配符
+[]普通字符组
+[^]排除字符组
+{m,n}量词</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>多条命令中的逻辑运算符</p>
+
+    <ul>
+      <li>
+        <p>||：逻辑或
+command1 || command2
+执行命令时，先执行1，若1成功，则跳过2，若1执行失败，则执行2</p>
+      </li>
+      <li>
+        <p>&amp;&amp;：逻辑与
+command1 &amp;&amp; command2
+执行命令时，先执行1，若1成功，则执行2，若1执行失败，则跳过2</p>
+      </li>
+      <li>
+        <p>括号
+提高命令的优先级</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>未完待续</p>
+</blockquote>
 
 
                 <hr>
@@ -243,7 +455,7 @@
                     
                     
                     <li class="next">
-                        <a href="/2015/04/14/unix-linux-note/" data-toggle="tooltip" data-placement="top" title="Example Post">Next Post &rarr;</a>
+                        <a href="/2016/10/13/Permutation-combination/" data-toggle="tooltip" data-placement="top" title="排列组合">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -273,18 +485,8 @@
                             
         				
                             
-        				
-                            
-        				
-                            
-                				<a href="/tags/#前端开发" title="前端开发" rel="3">
-                                    前端开发
-                                </a>
-                            
-        				
-                            
-                				<a href="/tags/#JavaScript" title="JavaScript" rel="3">
-                                    JavaScript
+                				<a href="/tags/#笔记" title="笔记" rel="2">
+                                    笔记
                                 </a>
                             
         				
