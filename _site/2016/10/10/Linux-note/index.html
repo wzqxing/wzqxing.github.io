@@ -79,7 +79,7 @@
                     </li>
                     
                     <li>
-                        <a href="/about/">star</a>
+                        <a href="/about/">STAR</a>
                     </li>
                     
                     <li>
@@ -552,6 +552,220 @@ command1 &amp;&amp; command2
     <p>排序命令<code class="highlighter-rouge">sort</code></p>
 
     <p><code class="highlighter-rouge">sort</code>处理的文本可以来自文本文件，也可以来自标准输入和管道</p>
+  </li>
+</ul>
+
+<h2 id="section-4">用户和文件权限管理</h2>
+
+<h4 id="section-5">用户管理</h4>
+<ul>
+  <li>
+    <p>系统用户文件：<code class="highlighter-rouge">/etc/passwd</code></p>
+
+    <p>文件中每一行都是一个用户的信息，用:将各个字段分开</p>
+
+    <p>第一个字段为 <strong>用户名</strong></p>
+
+    <p>第二个字段为 <strong>用户登录密码</strong>，x表示密码保存在<code class="highlighter-rouge">/etc/shadow</code>中</p>
+
+    <p>第三个字段为 <strong>用户ID号（UID）</strong></p>
+
+    <p>第四个字段为 <strong>用户所属组的ID号（GID）</strong></p>
+
+    <p>第五个字段通常为空，保存其他信息</p>
+
+    <p>第六个字段为 <strong>用户家目录</strong></p>
+
+    <p>第七个字段保存的是用户使用的Shell</p>
+  </li>
+  <li>
+    <p>用户密码文件：<code class="highlighter-rouge">/etc/shadow</code>(影子文件)</p>
+
+    <p>第一个字段为 <strong>用户名</strong></p>
+
+    <p>第二个字段为 <strong>密码加密后的密文字符串</strong> （$1$开头表示采用MD5加密）</p>
+
+    <p>第三个字段为 <strong>修改密码的天数</strong> （从19700101算起）</p>
+
+    <p>第四个字段表示 <strong>两次修改密码之间的间隔天数</strong>，0代表随时修改</p>
+
+    <p>第五个字段表示密码最长存留天数（1表示用户不能改变密码）。</p>
+
+    <p>第六个字段表示密码过期之前的警告天数（-1表示没有警告）</p>
+
+    <p>第七个字段表示密码过期之后禁止用户登录的天数（1表示不会禁用）</p>
+
+    <p>第八个字段表示过期后禁用的天数（-1表示不会禁用），以自19700101以来的天数表示</p>
+
+    <p>最后一个字段为保留字段</p>
+  </li>
+  <li>
+    <p>软件专有用户：保证安全性</p>
+  </li>
+  <li>
+    <p>添加用户命令<code class="highlighter-rouge">useradd</code></p>
+
+    <p>命令格式：</p>
+
+    <p><strong><code class="highlighter-rouge">useradd [option] username</code></strong></p>
+
+    <p>常用选项：</p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code>- g：指定用户所属用户组
+- s：指定用户使用的Shell
+</code></pre>
+    </div>
+  </li>
+</ul>
+
+<blockquote>
+  <ul>
+    <li>编译安装软件时，有些软件要求建立软件专有用户，由于软件专有用户不能直接登录系统，要用s选项修改软件专有用户使用的Shell，例如使用useradd命令添加MySQL的专有用户：<code class="highlighter-rouge">useradd -s /sbin/nologin mysql</code></li>
+    <li>根据安装的软件包不同，家目录中可能会存在一些别的初始化文件，初始化文件模板放在<code class="highlighter-rouge">/etc/skel/</code></li>
+  </ul>
+</blockquote>
+
+<ul>
+  <li>
+    <p>设置用户密码命令<code class="highlighter-rouge">passwd</code></p>
+
+    <p>命令格式：</p>
+
+    <p><strong><code class="highlighter-rouge">passwd [username]</code></strong></p>
+
+    <p>若不指定用户，则修改当前用户的密码</p>
+  </li>
+  <li>
+    <p>删除用户命令<code class="highlighter-rouge">userdel</code></p>
+
+    <p>命令格式：</p>
+
+    <p><strong><code class="highlighter-rouge">userdel [option] username</code></strong></p>
+
+    <p>常用选项：</p>
+
+    <p>r：删除用户时，连同用户的家目录和邮件文件一起删除</p>
+  </li>
+  <li>
+    <p>用户管理命令<code class="highlighter-rouge">usermod</code></p>
+
+    <p>命令格式：</p>
+
+    <p><strong><code class="highlighter-rouge">username [option] username</code></strong></p>
+
+    <p>常用选项：</p>
+
+    <ul>
+      <li>L:锁定用户，即禁止用户登录系统</li>
+      <li>U：解除锁定</li>
+      <li>e：指定用户过期的日期</li>
+      <li>f：指定用户过期之后的缓冲天数，即过期之后还能登录的天数</li>
+      <li>d：为用户指定新的家目录</li>
+      <li>m：为用户指定新的家目录，移动原来家目录中的所有文件</li>
+      <li>s：修改用户默认Shell</li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>也可以通过修改文件/etc/login.defs 的方式，修改用户的密码策略</p>
+</blockquote>
+
+<h4 id="section-6">用户组管理</h4>
+
+<ul>
+  <li>
+    <p>用户组文件</p>
+
+    <p><code class="highlighter-rouge">/etc/group</code>:系统用户组文件</p>
+
+    <p>第一个字段为用户组名</p>
+
+    <p>第二个字段为组密码，为空说明不需要密码</p>
+
+    <p>第三个字段为GID</p>
+
+    <p>第四个字段为用户列表</p>
+
+    <p><code class="highlighter-rouge">/etc/gshadow</code>:用户组密码文件</p>
+
+    <p>第一个字段为用户组名</p>
+
+    <p>第二个字段为密码</p>
+
+    <p>第三个字段为用户组管理员</p>
+
+    <p>第四个字段为组成员列表</p>
+
+    <p><code class="highlighter-rouge">groupadd</code></p>
+
+    <p><code class="highlighter-rouge">groupdel</code></p>
+
+    <p><code class="highlighter-rouge">groupmod</code></p>
+  </li>
+</ul>
+
+<h4 id="section-7">基本权限及管理命令</h4>
+
+<ul>
+  <li>
+    <p>文件属主和属组</p>
+
+    <p>ls -l 命令中第一个是属主，第二个是属组</p>
+
+    <p>修改文件属主和属组的命令<code class="highlighter-rouge">chown</code>、<code class="highlighter-rouge">chgrp</code></p>
+  </li>
+  <li>
+    <p>文件权限和表示方法</p>
+
+    <ul>
+      <li>
+        <p>传统文件权限</p>
+
+        <p>三类权限：读（r）、写（w）、执行（x）</p>
+      </li>
+      <li>
+        <p>符号表示文件权限</p>
+
+        <p>9个字符分为三组，每组3个字符</p>
+
+        <p>第一组：属主权限位（u）</p>
+
+        <p>第二组：属组权限位（g）</p>
+
+        <p>第三组：其他用户权限（o）</p>
+      </li>
+      <li>
+        <p>文件权限绝对模式</p>
+
+        <p>1表示执行权限</p>
+
+        <p>2表示写权限</p>
+
+        <p>4表示读权限</p>
+
+        <p>三者相加</p>
+      </li>
+      <li>
+        <p>文件权限管理命令<code class="highlighter-rouge">chmod</code></p>
+
+        <p>命令格式：</p>
+
+        <p><code class="highlighter-rouge">chmod [option] [mode] file</code></p>
+
+        <p>常用选项：</p>
+
+        <p>R递归修改目录及目录中所有文件权限</p>
+
+        <p>mode可以拆分为操作对象、操作符、权限列表：</p>
+
+        <p>操作对象：u、g、o、a</p>
+
+        <p>操作符：+添加权限 -删除权限 =赋予权限</p>
+
+        <p>权限列表：r、w、x的组合</p>
+      </li>
+    </ul>
   </li>
 </ul>
 
