@@ -1,0 +1,360 @@
+<h2 id="catagory">Catagory</h2>
+
+<ol>
+  <li><a href="#section">目录结构</a></li>
+  <li><a href="#bash">bash快捷键</a></li>
+  <li><a href="#section-1">常用命令</a></li>
+  <li><a href="#section-2">字符</a></li>
+  <li><a href="#section-3">查找和筛选</a></li>
+</ol>
+
+<h2 id="section">目录结构</h2>
+
+<blockquote>
+  <p>Linux目录的主要功能</p>
+</blockquote>
+
+<ul>
+  <li>/bin <strong>普通用户可使用的指令</strong></li>
+  <li>/boot 启动文件</li>
+  <li>/dev 设备文件</li>
+  <li>/etc 系统和服务设置文件（若要修改，先备份）</li>
+  <li>/home 用户目录</li>
+  <li>/lib 系统几相关软件依赖的库文件</li>
+  <li>/lost+found 若系统意外关机后，损失文件及文件碎片所放置地点。系统重启会自动修复</li>
+  <li>/media 挂载光驱U盘等</li>
+  <li>/mnt 临时挂载磁盘设备</li>
+  <li>/opt 额外和需要编译安装的软件放置处</li>
+  <li>/root root 用户目录</li>
+  <li>/sbin 系统管理命令</li>
+  <li>/tmp 存放系统和进程产生的临时文件</li>
+  <li>/user 帮助文件和配置文件及程序</li>
+  <li>/var 多类型文件 如日志文件和数据库文件</li>
+</ul>
+
+<h2 id="bash">bash快捷键</h2>
+
+<blockquote>
+  <p>多用快捷键，特别是手残之人</p>
+</blockquote>
+
+<ul>
+  <li>Ctrl+B <strong>向前移动光标一个字符</strong></li>
+  <li>Ctrl+F 向后移动光标一个字符</li>
+  <li>Ctrl+A <strong>移动光标到行首</strong></li>
+  <li>
+    <p>Ctrl+E 移动光标到行尾</p>
+  </li>
+  <li>Ctrl+D 删除光标处字符</li>
+  <li>Ctrl+H 删除光标的前一个字符</li>
+  <li>Ctrl+U <strong>删除当前光标到行首</strong></li>
+  <li>Ctrl+K 删除当前光标到行尾的所有字符</li>
+  <li>
+    <p>Ctrl+L <strong>清屏</strong></p>
+  </li>
+  <li>绑定快捷键和命令<em>bind</em>
+    <ul>
+      <li>bind -P 查看以绑定的快捷键</li>
+    </ul>
+  </li>
+  <li>history 命令行历史</li>
+  <li>alias 命令别名功能</li>
+</ul>
+
+<h2 id="section-1">常用命令</h2>
+
+<ul>
+  <li>ls
+    <ul>
+      <li>-d显示目录</li>
+      <li>-a显示全部</li>
+      <li>-l显示详细</li>
+      <li>-S文件大小排序</li>
+      <li>-k显示文件大小以k自己为单位</li>
+      <li>-h必须配合l使用，更加直观</li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>ll(代表ls -l)
+-：表示普通文件
+d：表示目录
+l：表示链接文件
+b：表示块文件，通常是磁盘或者分区
+c：字符设备文件，通常是键盘、鼠标等
+p：管道文件</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>ln 文件链接命令
+  ln [option] target link_name
+  加-s创建软连接（快捷方式），不加创建硬链接（副本）</p>
+  </li>
+  <li>touch 创建文件命令</li>
+  <li>mkdir 创建目录 -p选项可以同事创建一个路径中多个目录</li>
+  <li>mv 移动文件和目录（重命名）</li>
+  <li>cp复制文件，复制目录加-R选项</li>
+  <li>rm 删除文件目录（-R）<strong>不可恢复</strong>，删除应加-i提示</li>
+  <li>file 查看文件类型命令</li>
+  <li>cat 查看文件内容</li>
+  <li>tail 从文本尾查看文本内容（f选项动态查看，n选项指定行数）</li>
+  <li>head 从文件头查看文本内容（n选项指定行数）</li>
+  <li>more 分屏显示文本内容（enter显示下一行，space显示下一屏，b显示上一屏，q退出）、、</li>
+  <li>less 类似more，但更方便</li>
+  <li>diff 比较两个文件的内容</li>
+  <li>wc 文本统计命令</li>
+  <li>date查看日期时间命令
+  修改日期时间命令date和clock（将当前时间写入硬件时钟）</li>
+  <li>
+    <p>cal查看日历命令</p>
+  </li>
+  <li>联线用户命令
+    <ul>
+      <li>who 查看当前联线的用户</li>
+      <li>finger 查看登录到系统的用户及相关信息</li>
+      <li>w 查看正在使用系统的用户
+        <ul>
+          <li>who 主要用于一般性查看，finger侧重用户的个人详细信息，w输出用户使用系统的情况</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>与联线用户通信的命令wall write mesg
+wall广播所有用户
+write私聊
+mesg n拒绝消息</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>断开联线用户命令fuser</p>
+  </li>
+  <li>
+    <p>su 临时切换用户命令</p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>sudo 以root权限执行命令</p>
+</blockquote>
+
+<ul>
+  <li>which 搜索命令：从<strong>环境变量</strong>中搜索文件位置</li>
+  <li>locate 文件搜索命令，更快搜索则需更新索引数据库（updatedb）</li>
+  <li>whereis 特殊文件搜索命令</li>
+  <li>
+    <p>apropos 关键字搜索命令</p>
+  </li>
+  <li>输入输出相关命令
+    <ul>
+      <li>echo 输出</li>
+      <li>read 接收用户输入命令</li>
+      <li>tee 显示并保存文本命令</li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>管道和输入输出重定向
+command1 | command2 | command3 …
+先执行command1，并通过管道将输出结果传递给command2处理……
+“"”管道后面的命令总是使用前面的命令输出作为命令输入”””
+重定向输出的操作符是 “&gt;” “»“,表示将结果写入，追加到指定文件中
+重定向输出的操作符是 “&lt;” “«“,表示将结果输入，追加到指定文件中
+错误重定向的操作符是 “2»” “2&gt;”
+变量 <strong>$?</strong> 保存的是上一个命令的退出状态，数字0表示上一个命令执行成功，非零表示出现错误</p>
+</blockquote>
+
+<ul>
+  <li>邮件命令</li>
+</ul>
+
+<blockquote>
+  <p>未配置互联网邮箱，期待ing</p>
+</blockquote>
+
+<p>mail
+格式：mail [option] [-s subject] [-c c_adress] [-b b_adress] user [-a file]….
+常用选项：
+	n：不读入设置文件/etc/mail.rc(这个文件允许用户使用外部地址而不是系统自带的sendmail发送邮件)。
+	s：设置邮件的主题信息
+	c：使用一个密件抄送列表
+	b：使用一个抄送列表
+用法事例：
+	（1）发送邮件时，通常将邮件正文放入一个文件夹内，然后使用重定向的方式读取并发送文件中的内容。例如要将文件net_info中的内容发送给用户root和user1，并将邮件主题设为net info：
+mail -s “net info” root,user1 &lt;net_info</p>
+
+<p>查看邮件
+mail [option]
+常用选项：
+	h：查看邮件标题
+	d：使用该命令加序号可以删除指定邮件
+	f：查看光标指向的邮件
+	n：跳转到指定序号的邮件
+	q：退出并将已经阅读的邮件存入文件~/mbox中
+	x：退出
+	!：允许使用shell命令</p>
+
+<ul>
+  <li>启动新shell命令exec
+格式：exec shell-command
+exec执行时，会使用新的shell替代当前的shell，如果没有特别指明，exec将会在命令执行完毕后退出新启动的shell。在实际应用中，exec长用来处理文件描述符</li>
+</ul>
+
+<h2 id="section-2">字符</h2>
+
+<ul>
+  <li>
+    <p>正则表达式</p>
+
+    <ul>
+      <li>双引号
+通常用来表示字符串，可用来屏蔽特殊字符</li>
+      <li>单引号
+和双引号相似，单双交替使用</li>
+      <li>反引号
+在字符串内表示命令</li>
+      <li>美元符号
+引用变量，还可以用来置换一个命令，使用美元符号置换命令时，bash会将相应的命令放入子shell执行</li>
+      <li>反斜线
+转义字符</li>
+      <li>问号
+通配符，代表一个字符</li>
+      <li>星号
+通配符，代表多个字符</li>
+      <li>[]
+正则中的普通字符组</li>
+      <li>[!]
+排除字符组</li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>使用查找模式是，将其放入”//”中，然后放入命令
+.通配符
+*重复
+^行首匹配符
+$行尾匹配符
+[]普通字符组
+[^]排除字符组
+{m,n}量词</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>多条命令中的逻辑运算符</p>
+
+    <ul>
+      <li>
+        <p>||：逻辑或
+command1 || command2
+执行命令时，先执行1，若1成功，则跳过2，若1执行失败，则执行2</p>
+      </li>
+      <li>
+        <p>&amp;&amp;：逻辑与
+command1 &amp;&amp; command2
+执行命令时，先执行1，若1成功，则执行2，若1执行失败，则跳过2</p>
+      </li>
+      <li>
+        <p>括号
+提高命令的优先级</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="section-3">查找和筛选</h2>
+
+<ul>
+  <li>
+    <p>查找工具<code class="highlighter-rouge">find</code></p>
+
+    <p><code class="highlighter-rouge">find</code>的基本格式</p>
+
+    <p><code class="highlighter-rouge">find [path] [expression]</code></p>
+
+    <p>常用选项</p>
+
+    <p>path：查找路径。未指定则为.</p>
+
+    <p>expression：表达式，通常由 <strong>选项、测试、动作</strong> 三类构成</p>
+
+    <p>选项用于指定find查找的目录、帮助等信息</p>
+
+    <p>help</p>
+
+    <p>depth 先在当前目录查找然后到当前子目录查找</p>
+
+    <p>maxdepth LEVEL 向下搜索到第LEVEL层</p>
+
+    <p>mindepth LEVEL</p>
+
+    <p>mount 不搜索远程文件系统</p>
+
+    <p>follow 遇到链接文件也检查链接指向的文件</p>
+
+    <p>测试：使得 <strong>输出</strong> 更加详细的信息</p>
+
+    <p>name 按文件名查找</p>
+
+    <p>perm 按文件权限查找</p>
+
+    <p>type 查找某一类型的文件</p>
+
+    <p>mtime 按修改时间查找</p>
+
+    <p>atime 按文件访问时间查找</p>
+
+    <p>size  按文件大小查找</p>
+
+    <p>User  按文件属主查找</p>
+
+    <p>group 按文件属组查找</p>
+
+    <p>nouser 查找没有属主的文件</p>
+
+    <p>nogroup 查找没有属组的文件</p>
+
+    <p>动作：指定如何查找和处理查找的文件</p>
+
+    <p>prune 不在指定目录查找</p>
+
+    <p>print查找到的文件输出到标准输出</p>
+
+    <p>exec  对查找到的文件执行exec后附带的命令</p>
+
+    <p>ok      对查找到的文件执行ok动作后的命令，执行前提问</p>
+
+    <p>大多数情况下，<code class="highlighter-rouge">find</code>至少包含一个测试和一个动作</p>
+
+    <p>例子：</p>
+
+    <p><code class="highlighter-rouge">/etc</code>目录下查找<code class="highlighter-rouge">smb.conf</code></p>
+
+    <p><code class="highlighter-rouge">find /etc -name "smb.conf" -print</code></p>
+
+    <p><code class="highlighter-rouge">/etc</code>目录下查找所有配置文件</p>
+
+    <p><code class="highlighter-rouge">find /etc -name "*.conf" -print</code></p>
+
+    <p>当前目录中查找名为<code class="highlighter-rouge">message</code>的文件</p>
+
+    <p><code class="highlighter-rouge">find -name "message" -print</code></p>
+
+    <p><code class="highlighter-rouge">find -name "[a-z][a-z][0-9].d" -print</code></p>
+
+    <p><code class="highlighter-rouge">&amp;</code>后台执行</p>
+
+    <p><code class="highlighter-rouge">find / -name "*.conf" -print &amp;</code></p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>未完待续</p>
+</blockquote>

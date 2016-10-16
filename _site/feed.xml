@@ -5,8 +5,8 @@
     <description>喃喃自语，唯有沉默</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 14 Oct 2016 22:18:28 +0800</pubDate>
-    <lastBuildDate>Fri, 14 Oct 2016 22:18:28 +0800</lastBuildDate>
+    <pubDate>Sun, 16 Oct 2016 16:12:43 +0800</pubDate>
+    <lastBuildDate>Sun, 16 Oct 2016 16:12:43 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -523,6 +523,120 @@ command1 &amp;amp;&amp;amp; command2
 提高命令的优先级&lt;/p&gt;
       &lt;/li&gt;
     &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;查找和筛选&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;查找工具&lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt;的基本格式&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find [path] [expression]&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;常用选项&lt;/p&gt;
+
+    &lt;p&gt;path：查找路径。未指定则为.&lt;/p&gt;
+
+    &lt;p&gt;expression：表达式，通常由 &lt;strong&gt;选项、测试、动作&lt;/strong&gt; 三类构成&lt;/p&gt;
+
+    &lt;p&gt;选项用于指定find查找的目录、帮助等信息&lt;/p&gt;
+
+    &lt;p&gt;help&lt;/p&gt;
+
+    &lt;p&gt;depth 先在当前目录查找然后到当前子目录查找&lt;/p&gt;
+
+    &lt;p&gt;maxdepth LEVEL 向下搜索到第LEVEL层&lt;/p&gt;
+
+    &lt;p&gt;mindepth LEVEL&lt;/p&gt;
+
+    &lt;p&gt;mount 不搜索远程文件系统&lt;/p&gt;
+
+    &lt;p&gt;follow 遇到链接文件也检查链接指向的文件&lt;/p&gt;
+
+    &lt;p&gt;测试：使得 &lt;strong&gt;输出&lt;/strong&gt; 更加详细的信息&lt;/p&gt;
+
+    &lt;p&gt;name 按文件名查找&lt;/p&gt;
+
+    &lt;p&gt;perm 按文件权限查找&lt;/p&gt;
+
+    &lt;p&gt;type 查找某一类型的文件&lt;/p&gt;
+
+    &lt;p&gt;mtime 按修改时间查找&lt;/p&gt;
+
+    &lt;p&gt;atime 按文件访问时间查找&lt;/p&gt;
+
+    &lt;p&gt;size  按文件大小查找&lt;/p&gt;
+
+    &lt;p&gt;User  按文件属主查找&lt;/p&gt;
+
+    &lt;p&gt;group 按文件属组查找&lt;/p&gt;
+
+    &lt;p&gt;nouser 查找没有属主的文件&lt;/p&gt;
+
+    &lt;p&gt;nogroup 查找没有属组的文件&lt;/p&gt;
+
+    &lt;p&gt;动作：指定如何查找和处理查找的文件&lt;/p&gt;
+
+    &lt;p&gt;prune 不在指定目录查找&lt;/p&gt;
+
+    &lt;p&gt;print查找到的文件输出到标准输出&lt;/p&gt;
+
+    &lt;p&gt;exec  对查找到的文件执行exec后附带的命令&lt;/p&gt;
+
+    &lt;p&gt;ok      对查找到的文件执行ok动作后的命令，执行前提问&lt;/p&gt;
+
+    &lt;p&gt;大多数情况下，&lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt;至少包含一个测试和一个动作&lt;/p&gt;
+
+    &lt;p&gt;例子：&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc&lt;/code&gt;目录下查找&lt;code class=&quot;highlighter-rouge&quot;&gt;smb.conf&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find /etc -name &quot;smb.conf&quot; -print&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc&lt;/code&gt;目录下查找所有配置文件&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find /etc -name &quot;*.conf&quot; -print&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;当前目录中查找名为&lt;code class=&quot;highlighter-rouge&quot;&gt;message&lt;/code&gt;的文件&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find -name &quot;message&quot; -print&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find -name &quot;[a-z][a-z][0-9].d&quot; -print&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;后台执行&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find / -name &quot;*.conf&quot; -print &amp;amp;&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;利用&lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt;查找到文件之后，可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;exec&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;ok&lt;/code&gt;后面紧跟要执行的Shell命令，再空一格后面试一格大括号“{}”，最后加上反斜杠“\”和一个分号。&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-exec [Shell命令] {} \;&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-ok [Shell命令] {} \;&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;xarg需要借助管道。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;查找文本工具&lt;code class=&quot;highlighter-rouge&quot;&gt;grep&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;grep&lt;/code&gt;工具在文件中查找与字符串pattern匹配的内容，如果找到，则将整行输出到标准输出
+利用管道可以在输出结果中查找&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;转换和删除重复命令&lt;code class=&quot;highlighter-rouge&quot;&gt;tr&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;基本格式：&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tr [options] [string1] [string2]&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string1&lt;/code&gt;用于查询的字符串，&lt;code class=&quot;highlighter-rouge&quot;&gt;string2&lt;/code&gt;用于转换查询到的字符串，tr命令不能读取文件，若要转换文件中的内容，可以用重定向输入输出和管道的方法&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;排序命令&lt;code class=&quot;highlighter-rouge&quot;&gt;sort&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sort&lt;/code&gt;处理的文本可以来自文本文件，也可以来自标准输入和管道&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 

@@ -240,4 +240,127 @@ $行尾匹配符
 
 
 
+## 查找和筛选
+
+- 查找工具`find`
+
+  `find`的基本格式
+
+    `find [path] [expression]`
+
+  常用选项
+
+    path：查找路径。未指定则为.
+
+    expression：表达式，通常由 **选项、测试、动作** 三类构成
+
+    选项用于指定find查找的目录、帮助等信息
+
+    help
+
+    depth 先在当前目录查找然后到当前子目录查找
+
+    maxdepth LEVEL 向下搜索到第LEVEL层
+
+    mindepth LEVEL
+
+    mount 不搜索远程文件系统
+
+    follow 遇到链接文件也检查链接指向的文件
+
+    测试：使得 **输出** 更加详细的信息
+
+    name 按文件名查找
+
+    perm 按文件权限查找
+
+    type 查找某一类型的文件
+
+    mtime 按修改时间查找
+
+    atime 按文件访问时间查找
+
+    size  按文件大小查找
+
+    User  按文件属主查找
+
+    group 按文件属组查找
+
+    nouser 查找没有属主的文件
+
+    nogroup 查找没有属组的文件
+
+    动作：指定如何查找和处理查找的文件
+
+    prune 不在指定目录查找
+
+    print查找到的文件输出到标准输出
+
+    exec  对查找到的文件执行exec后附带的命令
+
+    ok      对查找到的文件执行ok动作后的命令，执行前提问
+
+  大多数情况下，`find`至少包含一个测试和一个动作
+
+
+  例子：
+
+  `/etc`目录下查找`smb.conf`
+
+  `find /etc -name "smb.conf" -print`
+
+
+  `/etc`目录下查找所有配置文件
+
+  `find /etc -name "*.conf" -print`
+
+
+  当前目录中查找名为`message`的文件
+
+  `find -name "message" -print`
+
+
+  `find -name "[a-z][a-z][0-9].d" -print`
+
+
+  `&`后台执行
+
+  `find / -name "*.conf" -print &`
+
+  利用`find`查找到文件之后，可以用`exec`、`ok`后面紧跟要执行的Shell命令，再空一格后面试一格大括号“{}”，最后加上反斜杠“\\”和一个分号。
+
+    `-exec [Shell命令] {} \;`
+
+    `-ok [Shell命令] {} \;`
+
+    xarg需要借助管道。
+
+
+- 查找文本工具`grep`
+
+  `grep`工具在文件中查找与字符串pattern匹配的内容，如果找到，则将整行输出到标准输出
+  利用管道可以在输出结果中查找
+
+- 转换和删除重复命令`tr`
+
+  基本格式：
+
+  `tr [options] [string1] [string2]`
+
+  `string1`用于查询的字符串，`string2`用于转换查询到的字符串，tr命令不能读取文件，若要转换文件中的内容，可以用重定向输入输出和管道的方法
+
+
+- 排序命令`sort`
+
+  `sort`处理的文本可以来自文本文件，也可以来自标准输入和管道
+  
+
+
+
+
+
+
+
+
+
 >未完待续
