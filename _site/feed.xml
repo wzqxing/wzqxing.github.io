@@ -5,9 +5,315 @@
     <description>喃喃自语，唯有沉默</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 16 Oct 2016 19:31:44 +0800</pubDate>
-    <lastBuildDate>Sun, 16 Oct 2016 19:31:44 +0800</lastBuildDate>
+    <pubDate>Fri, 18 Nov 2016 12:52:59 +0800</pubDate>
+    <lastBuildDate>Fri, 18 Nov 2016 12:52:59 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>shell编程笔记</title>
+        <description>&lt;h2 id=&quot;catalog&quot;&gt;Catalog&lt;/h2&gt;
+
+&lt;p&gt;1、&lt;a href=&quot;(#section)&quot;&gt;常用shell变量&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;2、&lt;a href=&quot;(#section-1)&quot;&gt;shell流程控制&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;shell&quot;&gt;常用shell变量&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;$HOME 家目录&lt;/li&gt;
+  &lt;li&gt;$PWD  当前路径&lt;/li&gt;
+  &lt;li&gt;$1、$2、… 运行脚本时的位置参数&lt;/li&gt;
+  &lt;li&gt;$0  当前脚本的名称&lt;/li&gt;
+  &lt;li&gt;$*  保存传递给脚本或进程的所有参数&lt;/li&gt;
+  &lt;li&gt;$$  当前进程或脚本的PID号&lt;/li&gt;
+  &lt;li&gt;$!  后台运行的最后一个进程的PID号&lt;/li&gt;
+  &lt;li&gt;$1  用于返回上一条命令是否成功执行。执行成功返回0，不成功返回1&lt;/li&gt;
+  &lt;li&gt;$#  用于保存脚本参数的个数&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;例子&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#This is a test script&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#利用$0输出当前脚本的名称&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;script name:&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$0&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;all parameters:&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$*&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;PID is the :&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$$&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;success of previous command:&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;shell-1&quot;&gt;shell流程控制&lt;/h2&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;条件测试和捕获信号&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;0表示true，1表示false&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;退出状态
+数字0表示命令或者程序成功执行
+数字1表示命令或者程序没有成功执行
+&lt;code class=&quot;highlighter-rouge&quot;&gt;exit 0&lt;/code&gt;表示脚本成功执行
+&lt;code class=&quot;highlighter-rouge&quot;&gt;exit 1&lt;/code&gt;表示脚本未成功执行&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;文件测试&lt;/p&gt;
+
+    &lt;p&gt;格式：&lt;code class=&quot;highlighter-rouge&quot;&gt;[-command parameter]&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;常用命令及其含义&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;d：测试目录是否存在&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;f：测试文件是否存在&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;L：测试链接文件是否存在&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;b：测试块设备文件是否存在&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;c：测试字符设备文件是否存在&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;e：测试指定文件或目录是否存在&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;文件权限测试&lt;/p&gt;
+
+    &lt;p&gt;常用命令&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;w：判断指定文件是否存在，并且有写权限&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;r:判断指定文件是否存在，并且有读权限&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;x:判断指定文件是否存在，并且有执行权限&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;u:判断指定文件是否存在，并且有SUID权限&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;针对脚本的执行用户&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;变量测试&lt;/p&gt;
+
+    &lt;p&gt;[ -z $变量名]测试变量是否定义&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;字符串测试&lt;/p&gt;
+
+    &lt;p&gt;命令格式：&lt;code class=&quot;highlighter-rouge&quot;&gt;[parameter1 operator parameter2]&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;parameter1和parameter2表示字符串，operator表示操作符&lt;/p&gt;
+
+    &lt;p&gt;操作符：&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;=：判断是否相等&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;！=：判断是否不等&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;n：判断是否为空&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;数值测试：&lt;/p&gt;
+
+    &lt;p&gt;操作命令&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;eq(=)：判断是否相等&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;ne(!=)：判断是否不等&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;lt：&amp;lt;&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;le：&amp;lt;=&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;gt：&amp;gt;&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;ge：&amp;gt;=&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;逻辑操作符&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;a：与&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;o：或&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;!：非&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;条件判断语句&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;if语句&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  if 条件表达式
+    then
+      语句 1
+      语句 2
+      ......
+  fi
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;if else语句&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  if 条件表达式
+    then
+      语句块 1
+  else
+      语句块 2
+  fi
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;if elif语句&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  if 条件表达式 1
+    then
+      语句块 1
+  elif 条件表达式 2
+    then
+      语句快 2
+  ......
+  else
+      语句块
+  fi
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;循环语句&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;for循环&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  for 变量 in 列表
+  do
+    语句块
+  done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;while循环&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  while 条件表达式
+  do
+    语句块
+  done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;continue和break控制循环&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;函数定义&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  function 函数名()
+  {
+    语句块
+  }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;或者&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  函数名()
+  {
+    语句块
+  }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;函数调用&lt;/p&gt;
+
+    &lt;p&gt;函数名 [参数]&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;函数形参&lt;/p&gt;
+
+    &lt;p&gt;$1、$2、$3……&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;返回执行状态&lt;/p&gt;
+
+    &lt;p&gt;return：最后一条语句的执行状态返回&lt;/p&gt;
+
+    &lt;p&gt;return 0：返回成功执行&lt;/p&gt;
+
+    &lt;p&gt;return 1：返回错误执行信息&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;函数文件的调用&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;路径名 ./函数文件名&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Thu, 17 Nov 2016 00:00:00 +0800</pubDate>
+        <link>/2016/11/17/Shell-note/</link>
+        <guid isPermaLink="true">/2016/11/17/Shell-note/</guid>
+        
+        <category>笔记</category>
+        
+        <category>编程</category>
+        
+        <category>Linux</category>
+        
+        
+      </item>
     
       <item>
         <title>排列组合</title>
@@ -853,6 +1159,8 @@ command1 &amp;amp;&amp;amp; command2
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;##&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;未完待续&lt;/p&gt;
