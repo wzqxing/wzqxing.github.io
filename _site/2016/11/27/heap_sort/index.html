@@ -10,9 +10,9 @@
     <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>silence |  Blog</title>
+    <title>堆的性质以及堆排序 - silence |  Blog</title>
 
-    <link rel="canonical" href="/">
+    <link rel="canonical" href="/2016/11/27/heap_sort/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -123,250 +123,288 @@
 </script>
 
 
-    <!-- Page Header -->
-<header class="intro-header" style="background-image: url('/img/home-bg-1.jpg')">
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/')
+    }
+</style>
+<header class="intro-header" >
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>沉默者说</h1>
-                    <!--<hr class="small">-->
-                    <span class="subheading">If I'm sorrow,only leave me alone</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                        
+                        <a class="tag" href="/tags/#排序" title="排序">排序</a>
+                        
+                    </div>
+                    <h1>堆的性质以及堆排序</h1>
+                    
+                    
+                    <h2 class="subheading">堆</h2>
+                    
+                    <span class="meta">Posted by 沉默者说 on November 27, 2016</span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Main Content -->
-<div class="container">
-	<div class="row">
-        
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
 
-<!-- USE SIDEBAR -->
     <!-- Post Container -->
-    		<div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-    			
-<div class="post-preview">
-    <a href="/2016/11/27/heap_sort/">
-        <h2 class="post-title">
-            堆的性质以及堆排序
-        </h2>
-        
-        <h3 class="post-subtitle">
-            堆
-        </h3>
-        
-        <div class="post-content-preview">
-            堆(heap)
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
 
-堆是一个近似完全二叉树，除了最底层，该数都是满的。最大堆中 父结点 的值 大于等于 子结点 。
-堆的数据结构是一个数组 heap.date ，数组的元素数 heap.date_length ，堆的有效元素 heap.size 。
+				<h2 id="heap">堆(heap)</h2>
 
-typedef int HeatEleType;
+<p>堆是一个近似完全二叉树，除了最底层，该数都是满的。最大堆中 <strong>父结点</strong> 的值 <em>大于等于</em> <strong>子结点</strong> 。
+堆的数据结构是一个数组 <em>heap.date</em> ，数组的元素数 <em>heap.date_length</em> ，堆的有效元素 <em>heap.size</em> 。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>typedef int HeatEleType;
 
 typedef struct
 {
   HeatEleType *date;
-  int si...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 沉默者说 on November 27, 2016
-    </p>
+  int size;
+  int date_length;
+} heap;
+</code></pre>
 </div>
-<hr>
 
-<div class="post-preview">
-    <a href="/2016/11/17/Shell-note/">
-        <h2 class="post-title">
-            shell编程笔记
-        </h2>
-        
-        <h3 class="post-subtitle">
-            
-        </h3>
-        
-        <div class="post-content-preview">
-            Catalog
+<p>若设最大堆的根结点的索引为1，则：</p>
 
-1、shell变量
+<div class="highlighter-rouge"><pre class="highlight"><code>int parent(int index)
+{
+  return index/2;
+}
 
-2、shell流程控制
+int left(int index)
+{
+  return index*2;
+}
 
-shell变量
-
-变量
-
-shell变量是动态类型，使用前无需先声明定义；shell是弱类型语言，可以将任何类型的值赋给同一变量名。准确的说，shell变量统一的按照字符串存储，但是根据变量的上下文环境，允许程序执行一些不同的操作，例如字符串的比较和整数的加减等。
-
-例子：
-
-#!/bin/bash
-x=123
-let "x ...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 沉默者说 on November 17, 2016
-    </p>
+int right(int index)
+{
+  return index*2+1;
+}
+</code></pre>
 </div>
-<hr>
 
-<div class="post-preview">
-    <a href="/2016/10/13/Permutation-combination/">
-        <h2 class="post-title">
-            排列组合
-        </h2>
-        
-        <h3 class="post-subtitle">
-            复习以及排列组合问题的一些基本问题
-        </h3>
-        
-        <div class="post-content-preview">
-            
-  
-    分类计数原理（加法原理）：互相独立
-    分步计数原理（乘法原理）：互相依存
-  
+<p>若最大堆的根结点的索引为0，则：</p>
 
+<div class="highlighter-rouge"><pre class="highlight"><code>int parent(int index)
+{
+  return int(index/2-0.5);
+}
 
-一、特殊元素或特殊位置优先原则：
+int left(int index)
+{
+  return index*2+1;
+}
 
-位置分析法和元素分析法是解决排列组合问题最常用的也是最基本的方法，若以元素分析为主，需先安排特殊元素，再处理其他元素。若以位置分析为主，需先满足特殊位置要求，在处理其他位置。若有多个约束条件，往往是考虑一个约束条件的同时还要兼顾其他条件。
-
-
-  7种...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 沉默者说 on October 13, 2016
-    </p>
+int right(int index)
+{
+  return index*2+2;
+}
+</code></pre>
 </div>
-<hr>
 
-<div class="post-preview">
-    <a href="/2016/10/10/Linux-note/">
-        <h2 class="post-title">
-            Linux学习笔记
-        </h2>
-        
-        <h3 class="post-subtitle">
-            记忆低能儿，杂乱无章的笔记
-        </h3>
-        
-        <div class="post-content-preview">
-            Catagory
+<p>为了方便起见，以下讨论均以根结点索引为1为基础。</p>
 
+<p>堆的基本过程：</p>
+<ul>
+  <li><em>max_heapify</em> ：维护最大堆的性质</li>
+  <li><em>build_max_heap</em>：建造最大堆</li>
+  <li><em>heap_sort</em>：堆排序</li>
+</ul>
 
-  目录结构
-  bash快捷键
-  常用命令
-  字符
-  查找和筛选
+<h2 id="maxheapify"><em>max_heapify</em></h2>
 
+<p><em>max_heapify</em> 是用来维护堆的性质的重要过程。它的输入为堆和索引 <em>index</em> ，<em>max_heapify</em> 通过让 <em>heap.date[index]</em> 的值在最大堆中“逐级下降”，从而使得以索引 <em>index</em> 为根结点的子树重新遵循最大堆的性质。</p>
 
-目录结构
+<div class="highlighter-rouge"><pre class="highlight"><code>void max_heapify(heap &amp;H,int index)
+{
+  int l,r,largest;
+  int temp;
 
+  l = left(index)
+  r = right(index)
 
-  Linux目录的主要功能
+  if ( l &lt;= H.size    &amp;&amp;    H.date[l] &gt; H.date[index] )
+    largest = l;
+  else
+    largest = index;
 
+  if ( r &lt;= H.size    &amp;&amp;    H.date[r] &gt; H.date[largest] )
+      largest = r;
 
+  if ( largest != index )
+  {
+    temp = date[largest];
+    date[largest] = date[index];
+    date[index] = temp;
+    max_heapify( H,largest );
+  }
 
-  /bin 普通用户可使用的指令
-  /boot 启动文件
-  /dev 设备文件
-  /etc 系统和服务设置文件（若要修改，先备份）
-  /home 用户目录
-  /lib 系统几相关软件依赖的库文件
-  /lost+found 若系统意...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 沉默者说 on October 10, 2016
-    </p>
+}
+</code></pre>
 </div>
-<hr>
+
+<p>以上是通过递归来实现，非递归代码如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>void max_heapify( heap &amp;H, int index)
+{
+  int l,r,largest,i;
+  i = index;
+
+  while ( i &lt;= H.size/2 )
+  {
+    l = left(index);
+    r = right(index);
+
+    if ( l &lt;= H.size    &amp;&amp;    H.date[l] &gt; H.date[i] )
+      largest = l;
+    else
+      largest = i;
+
+    if ( r &lt;= H.size    &amp;&amp;    H.date[r] &gt; H.date[largest] )
+        largest = r;
+
+    if ( largest != i )
+    {
+      temp = date[largest];
+      date[largest] = date[i];
+      date[i] = temp;
+
+      i = largest;  
+    }  
+  }  
+}
+</code></pre>
+</div>
 
 
-<!-- Pager -->
+                <hr>
+
+                
 
 
-    		</div>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/11/17/Shell-note/" data-toggle="tooltip" data-placement="top" title="shell编程笔记">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+
+                
+
+                
+
+            </div>
+
     <!-- Sidebar Container -->
             <div class="
-                col-lg-3 col-lg-offset-0
-                col-md-3 col-md-offset-0
-                col-sm-12
-                col-xs-12
-                sidebar-container
-            ">
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
                 <!-- Featured Tags -->
                 
                 <section>
                     <hr class="hidden-sm hidden-xs">
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
-                        
+        				
                             
-                        
+        				
                             
-                                <a href="/tags/#Linux" title="Linux" rel="2">
+                				<a href="/tags/#Linux" title="Linux" rel="2">
                                     Linux
                                 </a>
                             
-                        
+        				
                             
-                                <a href="/tags/#笔记" title="笔记" rel="3">
+                				<a href="/tags/#笔记" title="笔记" rel="3">
                                     笔记
                                 </a>
                             
-                        
+        				
                             
-                        
+        				
                             
-                        
+        				
                             
-                        
+        				
                             
-                        
-                    </div>
+        				
+        			</div>
                 </section>
                 
 
-                <!-- Short About -->
-                <section class="visible-md visible-lg">
-                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
-                    <div class="short-about">
-                        
-                            <img src="/img/myself.jpg" />
-                        
-                        
-                            <p>沉默者说</p>
-                        
-                        <!-- SNS Link -->
-                        <ul class="list-inline">
-                            
-                            
-                            
-                            
-                            
-                            
-                        </ul>
-                    </div>
-                </section>
                 <!-- Friends Blog -->
                 
-    		</div>
-        
-	</div>
-</div>
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
 
 
     <!-- Footer -->

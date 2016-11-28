@@ -5,9 +5,150 @@
     <description>喃喃自语，唯有沉默</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 25 Nov 2016 19:23:03 +0800</pubDate>
-    <lastBuildDate>Fri, 25 Nov 2016 19:23:03 +0800</lastBuildDate>
+    <pubDate>Sun, 27 Nov 2016 20:21:45 +0800</pubDate>
+    <lastBuildDate>Sun, 27 Nov 2016 20:21:45 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>堆的性质以及堆排序</title>
+        <description>&lt;h2 id=&quot;heap&quot;&gt;堆(heap)&lt;/h2&gt;
+
+&lt;p&gt;堆是一个近似完全二叉树，除了最底层，该数都是满的。最大堆中 &lt;strong&gt;父结点&lt;/strong&gt; 的值 &lt;em&gt;大于等于&lt;/em&gt; &lt;strong&gt;子结点&lt;/strong&gt; 。
+堆的数据结构是一个数组 &lt;em&gt;heap.date&lt;/em&gt; ，数组的元素数 &lt;em&gt;heap.date_length&lt;/em&gt; ，堆的有效元素 &lt;em&gt;heap.size&lt;/em&gt; 。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;typedef int HeatEleType;
+
+typedef struct
+{
+  HeatEleType *date;
+  int size;
+  int date_length;
+} heap;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;若设最大堆的根结点的索引为1，则：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int parent(int index)
+{
+  return index/2;
+}
+
+int left(int index)
+{
+  return index*2;
+}
+
+int right(int index)
+{
+  return index*2+1;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;若最大堆的根结点的索引为0，则：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int parent(int index)
+{
+  return int(index/2-0.5);
+}
+
+int left(int index)
+{
+  return index*2+1;
+}
+
+int right(int index)
+{
+  return index*2+2;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;为了方便起见，以下讨论均以根结点索引为1为基础。&lt;/p&gt;
+
+&lt;p&gt;堆的基本过程：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;max_heapify&lt;/em&gt; ：维护最大堆的性质&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;build_max_heap&lt;/em&gt;：建造最大堆&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;heap_sort&lt;/em&gt;：堆排序&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;maxheapify&quot;&gt;&lt;em&gt;max_heapify&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;max_heapify&lt;/em&gt; 是用来维护堆的性质的重要过程。它的输入为堆和索引 &lt;em&gt;index&lt;/em&gt; ，&lt;em&gt;max_heapify&lt;/em&gt; 通过让 &lt;em&gt;heap.date[index]&lt;/em&gt; 的值在最大堆中“逐级下降”，从而使得以索引 &lt;em&gt;index&lt;/em&gt; 为根结点的子树重新遵循最大堆的性质。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void max_heapify(heap &amp;amp;H,int index)
+{
+  int l,r,largest;
+  int temp;
+
+  l = left(index)
+  r = right(index)
+
+  if ( l &amp;lt;= H.size    &amp;amp;&amp;amp;    H.date[l] &amp;gt; H.date[index] )
+    largest = l;
+  else
+    largest = index;
+
+  if ( r &amp;lt;= H.size    &amp;amp;&amp;amp;    H.date[r] &amp;gt; H.date[largest] )
+      largest = r;
+
+  if ( largest != index )
+  {
+    temp = date[largest];
+    date[largest] = date[index];
+    date[index] = temp;
+    max_heapify( H,largest );
+  }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;以上是通过递归来实现，非递归代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void max_heapify( heap &amp;amp;H, int index)
+{
+  int l,r,largest,i;
+  i = index;
+
+  while ( i &amp;lt;= H.size/2 )
+  {
+    l = left(index);
+    r = right(index);
+
+    if ( l &amp;lt;= H.size    &amp;amp;&amp;amp;    H.date[l] &amp;gt; H.date[i] )
+      largest = l;
+    else
+      largest = i;
+
+    if ( r &amp;lt;= H.size    &amp;amp;&amp;amp;    H.date[r] &amp;gt; H.date[largest] )
+        largest = r;
+
+    if ( largest != i )
+    {
+      temp = date[largest];
+      date[largest] = date[i];
+      date[i] = temp;
+
+      i = largest;  
+    }  
+  }  
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Sun, 27 Nov 2016 00:00:00 +0800</pubDate>
+        <link>/2016/11/27/heap_sort/</link>
+        <guid isPermaLink="true">/2016/11/27/heap_sort/</guid>
+        
+        <category>算法</category>
+        
+        <category>排序</category>
+        
+        
+      </item>
     
       <item>
         <title>shell编程笔记</title>

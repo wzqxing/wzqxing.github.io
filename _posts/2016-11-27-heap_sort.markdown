@@ -1,0 +1,142 @@
+---
+layout:     post
+title:      "堆的性质以及堆排序"
+subtitle:   "堆"
+data:       2016-11-27
+authori:    "silence"
+header-img: ""
+tags:
+        - 算法
+        - 排序
+
+
+
+---
+
+## 堆(heap)
+
+堆是一个近似完全二叉树，除了最底层，该数都是满的。最大堆中 **父结点** 的值 *大于等于* **子结点** 。
+堆的数据结构是一个数组 *heap.date* ，数组的元素数 *heap.date_length* ，堆的有效元素 *heap.size* 。
+
+```
+typedef int HeatEleType;
+
+typedef struct
+{
+  HeatEleType *date;
+  int size;
+  int date_length;
+} heap;
+```
+
+若设最大堆的根结点的索引为1，则：
+
+```
+int parent(int index)
+{
+  return index/2;
+}
+
+int left(int index)
+{
+  return index*2;
+}
+
+int right(int index)
+{
+  return index*2+1;
+}
+```
+
+若最大堆的根结点的索引为0，则：
+
+```
+int parent(int index)
+{
+  return int(index/2-0.5);
+}
+
+int left(int index)
+{
+  return index*2+1;
+}
+
+int right(int index)
+{
+  return index*2+2;
+}
+```
+
+为了方便起见，以下讨论均以根结点索引为1为基础。
+
+堆的基本过程：
+- *max_heapify* ：维护最大堆的性质
+- *build_max_heap*：建造最大堆
+- *heap_sort*：堆排序
+
+## *max_heapify*
+
+*max_heapify* 是用来维护堆的性质的重要过程。它的输入为堆和索引 *index* ，*max_heapify* 通过让 *heap.date[index]* 的值在最大堆中“逐级下降”，从而使得以索引 *index* 为根结点的子树重新遵循最大堆的性质。
+
+```
+void max_heapify(heap &H,int index)
+{
+  int l,r,largest;
+  int temp;
+
+  l = left(index)
+  r = right(index)
+
+  if ( l <= H.size    &&    H.date[l] > H.date[index] )
+    largest = l;
+  else
+    largest = index;
+
+  if ( r <= H.size    &&    H.date[r] > H.date[largest] )
+      largest = r;
+
+  if ( largest != index )
+  {
+    temp = date[largest];
+    date[largest] = date[index];
+    date[index] = temp;
+    max_heapify( H,largest );
+  }
+
+}
+```
+
+以上是通过递归来实现，非递归代码如下：
+
+```
+void max_heapify( heap &H, int index)
+{
+  int l,r,largest,i,temp;
+  i = index;
+
+  while ( 1 )
+  {
+    l = left(i);
+    r = right(i);
+
+    if ( l <= H.size    &&    H.date[l] > H.date[i] )
+      largest = l;
+    else
+      largest = i;
+
+    if ( r <= H.size    &&    H.date[r] > H.date[largest] )
+        largest = r;
+
+    if ( largest > i )
+    {
+      temp = H.date[largest];
+      H.date[largest] = H.date[i];
+      H.date[i] = temp;
+
+      i = largest;
+    }
+    else
+      break;
+  }
+}
+```
