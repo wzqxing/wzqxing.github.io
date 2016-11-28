@@ -5,8 +5,8 @@
     <description>喃喃自语，唯有沉默</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 27 Nov 2016 20:21:45 +0800</pubDate>
-    <lastBuildDate>Sun, 27 Nov 2016 20:21:45 +0800</lastBuildDate>
+    <pubDate>Mon, 28 Nov 2016 21:39:41 +0800</pubDate>
+    <lastBuildDate>Mon, 28 Nov 2016 21:39:41 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -110,13 +110,13 @@ int right(int index)
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void max_heapify( heap &amp;amp;H, int index)
 {
-  int l,r,largest,i;
+  int l,r,largest,i,temp;
   i = index;
 
-  while ( i &amp;lt;= H.size/2 )
+  while ( 1 )
   {
-    l = left(index);
-    r = right(index);
+    l = left(i);
+    r = right(i);
 
     if ( l &amp;lt;= H.size    &amp;amp;&amp;amp;    H.date[l] &amp;gt; H.date[i] )
       largest = l;
@@ -126,18 +126,79 @@ int right(int index)
     if ( r &amp;lt;= H.size    &amp;amp;&amp;amp;    H.date[r] &amp;gt; H.date[largest] )
         largest = r;
 
-    if ( largest != i )
+    if ( largest &amp;gt; i )
     {
-      temp = date[largest];
-      date[largest] = date[i];
-      date[i] = temp;
+      temp = H.date[largest];
+      H.date[largest] = H.date[i];
+      H.date[i] = temp;
 
-      i = largest;  
-    }  
-  }  
+      i = largest;
+    }
+    else
+      break;
+  }
 }
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+
+&lt;h2 id=&quot;initheap&quot;&gt;&lt;em&gt;initHeap&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;通过自底向上的方法利用　&lt;em&gt;max_heapify&lt;/em&gt;　把一个数组转换为一个最大堆。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void initHeap( heap &amp;amp;H,HeatEleType *list,int n)
+{
+  H.date = new HeatEleType[n+1];
+  if(!H.date)
+  {
+    cerr&amp;lt;&amp;lt;&quot;堆存储分配失败&quot;;
+    exit(1);
+  }
+  H.size = n;
+  int i;
+
+
+  for(i=0; i&amp;lt;n; i++)
+    H.date[i+1] = list[i];
+
+//自底向上建立堆，叶节点无须此过程
+  for(i=n/2; i&amp;gt;=1; i--)
+    max_heapify(H,i);
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;为什么循环变量是从n/2到１递减，而不是从１到n/2递增？&lt;/p&gt;
+
+  &lt;p&gt;因为初始时列表并不是一个堆，不能使用&lt;em&gt;max_heapify&lt;/em&gt;，所以必须是自底向上建堆&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;heapsort&quot;&gt;堆排序(heap_sort)&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void heap_sort( heap &amp;amp;H, HeatEleType *date, int n)
+{
+  initHeap(H,date,n);
+  int i;
+  int temp;
+  for( i=H.size; i&amp;gt;=2; i--)
+  {
+    temp = H.date[i];
+    H.date[i] = H.date[1];
+    H.date[1] = temp;
+    H.size -= 1;
+    max_heapify(H,1);
+  }
+
+  for(i=0; i&amp;lt;n;i++)
+    date[i] = H.date[i+1];
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;参考算法导论第六章&lt;/p&gt;
+&lt;/blockquote&gt;
 </description>
         <pubDate>Sun, 27 Nov 2016 00:00:00 +0800</pubDate>
         <link>/2016/11/27/heap_sort/</link>

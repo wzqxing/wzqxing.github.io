@@ -140,3 +140,58 @@ void max_heapify( heap &H, int index)
   }
 }
 ```
+
+## *initHeap*
+
+通过自底向上的方法利用　*max_heapify*　把一个数组转换为一个最大堆。
+
+```
+void initHeap( heap &H,HeatEleType *list,int n)
+{
+  H.date = new HeatEleType[n+1];
+  if(!H.date)
+  {
+    cerr<<"堆存储分配失败";
+    exit(1);
+  }
+  H.size = n;
+  int i;
+
+
+  for(i=0; i<n; i++)
+    H.date[i+1] = list[i];
+
+//自底向上建立堆，叶节点无须此过程
+  for(i=n/2; i>=1; i--)
+    max_heapify(H,i);
+
+}
+```
+
+>为什么循环变量是从n/2到１递减，而不是从１到n/2递增？
+>
+因为初始时列表并不是一个堆，不能使用*max_heapify*，所以必须是自底向上建堆
+
+## 堆排序(heap_sort)
+
+```
+void heap_sort( heap &H, HeatEleType *date, int n)
+{
+  initHeap(H,date,n);
+  int i;
+  int temp;
+  for( i=H.size; i>=2; i--)
+  {
+    temp = H.date[i];
+    H.date[i] = H.date[1];
+    H.date[1] = temp;
+    H.size -= 1;
+    max_heapify(H,1);
+  }
+
+  for(i=0; i<n;i++)
+    date[i] = H.date[i+1];
+}
+```
+
+>参考算法导论第六章
