@@ -10,9 +10,9 @@
     <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>STAR - silence |  Blog</title>
+    <title>散列表原理及散列函数 - silence |  Blog</title>
 
-    <link rel="canonical" href="/about/">
+    <link rel="canonical" href="/2017/03/21/Hash_table_2/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -123,232 +123,233 @@
 </script>
 
 
-    <!-- Page Header -->
-<header class="intro-header" style="background-image: url('/img/about-bg.jpg')">
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/')
+    }
+</style>
+<header class="intro-header" >
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>STAR</h1>
-                    <!--<hr class="small">-->
-                    <span class="subheading">那仰望的人心里的孤独和叹息</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                        
+                        <a class="tag" href="/tags/#数据结构" title="数据结构">数据结构</a>
+                        
+                    </div>
+                    <h1>散列表原理及散列函数</h1>
+                    
+                    
+                    <h2 class="subheading">深刻讨论散列表</h2>
+                    
+                    <span class="meta">Posted by 沉默者说 on March 21, 2017</span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Main Content -->
-<div class="container">
-	<div class="row">
-        
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
 
-<!-- USE SIDEBAR -->
     <!-- Post Container -->
-    		<div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-    			<!-- Language Selector -->
-<select onchange= "onLanChange(this.options[this.options.selectedIndex].value)">
-    <option value="0" selected> 孤 </option>
-    <option value="1"> 夜空中最亮的星 </option>
-</select>
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
 
-<!-- Chinese Version -->
-<div class="zh post-container">
-    <blockquote>
-        那又如何？
-	在这个世界上，从来没有理所应当！
-    </blockquote>
-怪异，孤僻，我知道这不过是为自己贴上一张相对来说与众不同的标签而已。<br>
-开始时的确为该属性发生在自己身上而苦恼过，<br>
-后来也自以为比周围的人要更向往纯净透彻而沾沾自喜过。<br>
-但显然这些都是因为内心的脆弱，<br>
-无法心甘与负面的事物同流合污，<br>
-又没有真正的实力改变周围的不美好。<br>
-导致自己不知疲惫的在本就狭隘的社交圈子中筛选，<br>
-剔除那些不相为谋的断定今后都不可能有交集的废人烂人恶人，<br>
-抵触那些妄想以他(她)经验标准来同化我，甚至改变我的人。<br>
-<br>
-我不屑，我厌恶，我鄙夷，我轻蔑，<br>
-我信奉物理类聚，人以群分，<br>
-生来便有一种注定，逃不过亦求不得。<br>
-真正能够与你为伴，走到最后的人，<br>
-本就是与你有着“我还没说可惜，你已经在叹息”的默契。<br>
-这世界物欲横流，冷漠无情。<br>
-我无违，我无谓，我无畏，<br>
-我厌恶人云亦云，吠影吠声，<br>
-哪怕唯有一人，我无悔。<br>
+				<h2 id="section">散列表</h2>
 
+<p>散列表是一种字典数据结构，主要有三种操作：</p>
 
-</div>
+<ul>
+  <li>插入</li>
+  <li>查找</li>
+  <li>删除</li>
+</ul>
 
-<!-- English Version -->
-<div class="en post-container">
-    <blockquote>
-        夜空中最亮的星
-    </blockquote>
-夜空中最亮的星<br>
-能否听清<br>
-那仰望的人<br>
-心底的孤独和叹息<br>
-夜空中最亮的星<br>
-能否记起<br>
-曾与我同行<br>
-消失在风里的身影
-<br><br>
-我祈祷拥有一颗透明的心灵<br>
-和会流泪的眼睛<br>
-给我再去相信的勇气<br>
-越过谎言去拥抱你<br>
-每当我找不到存在的意义<br>
-每当我迷失在黑夜里<br>
-夜空中最亮的星<br>
-请指引我靠近你
-<br><br>
-夜空中最亮的星<br>
-是否知道<br>
-曾与我同行的身影<br>
-如今在哪里<br>
-夜空中最亮的星<br>
-是否在意<br>
-是等太阳升起<br>
-还是意外先来临<br>
-<br>
-<p>
-<img src="https://wzqxing.github.io/img/1437064855210.jpeg">
-</p>
-我宁愿所有痛苦都留在心里<br>
-也不愿忘记你的眼睛<br>
-给我再去相信的勇气<br>
-越过谎言去拥抱你<br>
-每当我找不到存在的意义<br>
-每当我迷失在黑夜里<br>
-夜空中最亮的星<br>
-请照亮我前行
-<br><br>
-我祈祷拥有一颗透明的心灵<br>
-和会流泪的眼睛<br>
-给我再去相信的勇气<br>
-越过谎言去拥抱你<br>
-每当我找不到存在的意义<br>
-每当我迷失在黑夜里<br>
-夜空中最亮的星<br>
-请照亮我前行
-<br><br>
-夜空中最亮的星<br>
-能否听清<br>
-那仰望的人<br>
-心底的孤独和叹息<br>
+<p>散列表的三种操作的时间代价都是 <em>O(1)</em>，但是这个是用空间代价换取而来。</p>
 
-</div>
+<h2 id="section-1">原理</h2>
 
-<!-- Handle Language Change -->
-<script type="text/javascript">
-    var $zh = document.querySelector(".zh");
-    var $en = document.querySelector(".en");
-    function onLanChange(index){
-        if(index == 0){
-            $zh.style.display = "block";
-            $en.style.display = "none";
-        }else{
-            $en.style.display = "block";
-            $zh.style.display = "none";
-        }
-    }
-    onLanChange(0);
-</script>
+<p>为何散列表在插入、查找、删除上如此高效？</p>
+
+<p>这主要是因为散列表通过 <strong>散列函数</strong> 用关键字 <em>(key)</em> 计算出结点的存储地址然后直接访问，这个时间与散列表的长度无关。</p>
+
+<p>在这个过程中，散列函数的好坏，很大程度上决定了散列表的性能。</p>
+
+<h4 id="section-2">散列函数</h4>
+
+<p>散列函数的功能是实现 <em>关键字</em> 到 <em>存储索引</em> 的变换。一个好的散列函数应（近似地）满足简单均匀散列假设： <strong>每个关键字都被等可能地散列到散列表槽位中的任何一个，并与其他关键字已散列到哪个槽位无关。</strong>　一般无法检查这一条是否成立，因为很难知道关键字散列所满足的概率分布。如果关键字为非自然数，要将其转化为数字。</p>
+
+<ul>
+  <li>
+    <p>除法散列法</p>
+
+    <p>在设计散列函数的除法散列中，通过取 <em>key</em>　除以 <em>m</em> 的余数，将关键字映射到 <em>m</em> 个槽位中。即：</p>
+
+    <p><strong><em>h(key) = key mod m</em></strong></p>
+
+    <p>选择除法散列法时，应避免某些 <em>m</em> 值，如不应为2的幂。一个不太接近2的整数幂的素数，通常是一个好的选择。</p>
+  </li>
+  <li>
+    <p>乘法散列法</p>
+
+    <p>散列函数为：</p>
+
+    <p><strong><em>h(k) = int( m</em>(k<em>A mod 1))</em></strong></p>
+
+    <p>其中 <em>k</em>A mod 1* 是取 <em>kA</em> 的小数部分。乘法散列法的一个优点是对 <em>m</em> 的选择不是特别关键，一般选择它为2的某个幂次。</p>
+  </li>
+</ul>
+
+<p>对于用链接法来解决散列冲突的散列表来说，散列函数的简单均匀假设很重要。</p>
+
+<h4 id="section-3">开放寻址法散列函数</h4>
+
+<p>在用开放寻址法解决冲突的散列表来说，散列函数由关键字和 <strong>探查号</strong>　决定。</p>
+
+<ul>
+  <li>线性探查：<strong><em>h(k,i) = ( h’(k)+i )mod m</em></strong></li>
+  <li>二次探查：<strong><em>h(k,i) = ( h’(k)+a</em>i+b<em>i</em>i )mod m</strong>*</li>
+  <li>双重散列（较好）：<strong><em>h(k,i) = ( h1(k)+i</em>h2(k) )mod m</strong>*</li>
+</ul>
+
+<h2 id="section-4">再论散列表</h2>
+
+<p>散列表的特性使得它经常被用来以空间换取时间。在《算法导论》中介绍了三种线性排序算法：计数排序、基数排序、桶排序。</p>
+
+<p>这三种排序算法都是在特定条件下，抛弃比较排序思路，打破 <strong><em>O(nlogn)</em></strong> 的时间限制，运用散列表的思想使得排序的运行时间下降为 <em>O(n)</em> 。而散列表的关键在于散列函数的设计。一个满足要求的好的散列函数，可以高效的提升算法效率。</p>
 
 
+                <hr>
+
+                
 
 
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/03/21/Hash_Table_1/" data-toggle="tooltip" data-placement="top" title="散列表的实现">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
 
 
+                
 
+                
 
-    		</div>
+            </div>
+
     <!-- Sidebar Container -->
             <div class="
-                col-lg-3 col-lg-offset-0
-                col-md-3 col-md-offset-0
-                col-sm-12
-                col-xs-12
-                sidebar-container
-            ">
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
                 <!-- Featured Tags -->
                 
                 <section>
                     <hr class="hidden-sm hidden-xs">
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
-                        
+        				
                             
-                        
+        				
                             
-                                <a href="/tags/#Linux" title="Linux" rel="2">
+                				<a href="/tags/#Linux" title="Linux" rel="2">
                                     Linux
                                 </a>
                             
-                        
+        				
                             
-                                <a href="/tags/#笔记" title="笔记" rel="3">
+                				<a href="/tags/#笔记" title="笔记" rel="3">
                                     笔记
                                 </a>
                             
-                        
+        				
                             
-                        
+        				
                             
-                                <a href="/tags/#编程" title="编程" rel="2">
+                				<a href="/tags/#编程" title="编程" rel="2">
                                     编程
                                 </a>
                             
-                        
+        				
                             
-                                <a href="/tags/#算法" title="算法" rel="3">
+                				<a href="/tags/#算法" title="算法" rel="3">
                                     算法
                                 </a>
                             
-                        
+        				
                             
-                        
+        				
                             
-                        
-                    </div>
+        				
+        			</div>
                 </section>
                 
 
-                <!-- Short About -->
-                <section class="visible-md visible-lg">
-                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
-                    <div class="short-about">
-                        
-                            <img src="/img/myself.jpg" />
-                        
-                        
-                            <p>沉默者说</p>
-                        
-                        <!-- SNS Link -->
-                        <ul class="list-inline">
-                            
-                            
-                            
-                            
-                            
-                            
-                        </ul>
-                    </div>
-                </section>
                 <!-- Friends Blog -->
                 
-    		</div>
-        
-	</div>
-</div>
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
 
 
     <!-- Footer -->

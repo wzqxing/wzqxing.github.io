@@ -5,9 +5,658 @@
     <description>喃喃自语，唯有沉默</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 28 Nov 2016 21:39:41 +0800</pubDate>
-    <lastBuildDate>Mon, 28 Nov 2016 21:39:41 +0800</lastBuildDate>
+    <pubDate>Tue, 21 Mar 2017 19:10:13 +0800</pubDate>
+    <lastBuildDate>Tue, 21 Mar 2017 19:10:13 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>散列表原理及散列函数</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;散列表&lt;/h2&gt;
+
+&lt;p&gt;散列表是一种字典数据结构，主要有三种操作：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;插入&lt;/li&gt;
+  &lt;li&gt;查找&lt;/li&gt;
+  &lt;li&gt;删除&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;散列表的三种操作的时间代价都是 &lt;em&gt;O(1)&lt;/em&gt;，但是这个是用空间代价换取而来。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;原理&lt;/h2&gt;
+
+&lt;p&gt;为何散列表在插入、查找、删除上如此高效？&lt;/p&gt;
+
+&lt;p&gt;这主要是因为散列表通过 &lt;strong&gt;散列函数&lt;/strong&gt; 用关键字 &lt;em&gt;(key)&lt;/em&gt; 计算出结点的存储地址然后直接访问，这个时间与散列表的长度无关。&lt;/p&gt;
+
+&lt;p&gt;在这个过程中，散列函数的好坏，很大程度上决定了散列表的性能。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;散列函数&lt;/h4&gt;
+
+&lt;p&gt;散列函数的功能是实现 &lt;em&gt;关键字&lt;/em&gt; 到 &lt;em&gt;存储索引&lt;/em&gt; 的变换。一个好的散列函数应（近似地）满足简单均匀散列假设： &lt;strong&gt;每个关键字都被等可能地散列到散列表槽位中的任何一个，并与其他关键字已散列到哪个槽位无关。&lt;/strong&gt;　一般无法检查这一条是否成立，因为很难知道关键字散列所满足的概率分布。如果关键字为非自然数，要将其转化为数字。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;除法散列法&lt;/p&gt;
+
+    &lt;p&gt;在设计散列函数的除法散列中，通过取 &lt;em&gt;key&lt;/em&gt;　除以 &lt;em&gt;m&lt;/em&gt; 的余数，将关键字映射到 &lt;em&gt;m&lt;/em&gt; 个槽位中。即：&lt;/p&gt;
+
+    &lt;p&gt;&lt;strong&gt;&lt;em&gt;h(key) = key mod m&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;选择除法散列法时，应避免某些 &lt;em&gt;m&lt;/em&gt; 值，如不应为2的幂。一个不太接近2的整数幂的素数，通常是一个好的选择。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;乘法散列法&lt;/p&gt;
+
+    &lt;p&gt;散列函数为：&lt;/p&gt;
+
+    &lt;p&gt;&lt;strong&gt;&lt;em&gt;h(k) = int( m&lt;/em&gt;(k&lt;em&gt;A mod 1))&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;其中 &lt;em&gt;k&lt;/em&gt;A mod 1* 是取 &lt;em&gt;kA&lt;/em&gt; 的小数部分。乘法散列法的一个优点是对 &lt;em&gt;m&lt;/em&gt; 的选择不是特别关键，一般选择它为2的某个幂次。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;对于用链接法来解决散列冲突的散列表来说，散列函数的简单均匀假设很重要。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;开放寻址法散列函数&lt;/h4&gt;
+
+&lt;p&gt;在用开放寻址法解决冲突的散列表来说，散列函数由关键字和 &lt;strong&gt;探查号&lt;/strong&gt;　决定。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;线性探查：&lt;strong&gt;&lt;em&gt;h(k,i) = ( h’(k)+i )mod m&lt;/em&gt;&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;二次探查：&lt;strong&gt;&lt;em&gt;h(k,i) = ( h’(k)+a&lt;/em&gt;i+b&lt;em&gt;i&lt;/em&gt;i )mod m&lt;/strong&gt;*&lt;/li&gt;
+  &lt;li&gt;双重散列（较好）：&lt;strong&gt;&lt;em&gt;h(k,i) = ( h1(k)+i&lt;/em&gt;h2(k) )mod m&lt;/strong&gt;*&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;再论散列表&lt;/h2&gt;
+
+&lt;p&gt;散列表的特性使得它经常被用来以空间换取时间。在《算法导论》中介绍了三种线性排序算法：计数排序、基数排序、桶排序。&lt;/p&gt;
+
+&lt;p&gt;这三种排序算法都是在特定条件下，抛弃比较排序思路，打破 &lt;strong&gt;&lt;em&gt;O(nlogn)&lt;/em&gt;&lt;/strong&gt; 的时间限制，运用散列表的思想使得排序的运行时间下降为 &lt;em&gt;O(n)&lt;/em&gt; 。而散列表的关键在于散列函数的设计。一个满足要求的好的散列函数，可以高效的提升算法效率。&lt;/p&gt;
+</description>
+        <pubDate>Tue, 21 Mar 2017 00:00:00 +0800</pubDate>
+        <link>/2017/03/21/Hash_table_2/</link>
+        <guid isPermaLink="true">/2017/03/21/Hash_table_2/</guid>
+        
+        <category>算法</category>
+        
+        <category>数据结构</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>散列表的实现</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;散列表&lt;/h2&gt;
+
+&lt;p&gt;散列表(&lt;em&gt;hash table&lt;/em&gt;)是实现字典操作的一种有效的数据结构。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;在合理的构建散列函数下，查找一个元素的平均时间是O(1)。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;散列表利用散列函数计算出数据的存储地址。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果两个关键字通过散列函数计算出的存储地址相同，这种情况叫做冲突，主要有两种情况来解决这个问题：链接法和开放寻址法。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;散列函数&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;好的散列函数的特点&lt;/p&gt;
+
+    &lt;p&gt;一个好的散列函数应（近似地）满足简单均匀假设：每个关键字都等可能的散列到　&lt;em&gt;m&lt;/em&gt;　个槽中。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;将关键字转化为自然数&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;链接法&lt;/h2&gt;
+
+&lt;p&gt;在链接法中，把散列到同一槽中的所有元素都放入一个链表中。此时数据结构应定义如下：&lt;/p&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;结点&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;typedef struct _node
+{
+  char *key;\\关键字
+  char *date;\\值
+  struct _node * next;\\同一槽中下一个结点指针
+} node;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;散列表&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;typedef struct HASH_TABLE
+{
+  node bucket[HASH_TABLE_SIZE];
+} HASH_TABLE;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;初始化&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void initHashTable( HASH_TABLE *T)
+{
+  if (T==NULL)
+    return;
+  else
+  {
+    int i;
+    for(i=0;i&amp;lt;HASH_TABLE_SIZE;i++)
+    {
+      T-&amp;gt;bucket[i].key=NULL;
+      T-&amp;gt;bucket[i].date=NULL;
+      T-&amp;gt;bucket[i].next=NULL;
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-6&quot;&gt;释放散列表内存&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;只能释放非存储在&lt;code class=&quot;highlighter-rouge&quot;&gt;bucket[]&lt;/code&gt;的结点&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void freeHashTable( HASH_TABLE *T)
+{
+  int i;
+  node* e,*ep;
+  if (T==NULL)
+    return;
+
+  for(i=0;i&amp;lt;HASH_TABLE_SIZE;i++)
+  {
+    e = &amp;amp;(T-&amp;gt;bucket[i]);
+    while (e-&amp;gt;next!=NULL)
+    {
+      ep = e-&amp;gt;next;
+      e-&amp;gt;next = ep-&amp;gt;next;
+      free(ep-&amp;gt;key);
+      free(ep-&amp;gt;date);
+      free(ep);
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-7&quot;&gt;定义散列函数&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;一个散列表的性能主要看散列函数如何&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//哈希表散列函数
+int keyToIndex(char *key)
+{
+  int length,index,i;
+  length = strlen(key);
+
+  if(key==NULL)
+    return -1;
+  index = (int) key[0];
+
+  for(i=１;i&amp;lt;length;i++)
+  {
+    index *= 1103515245 + (int)key[i];
+  }
+  index &amp;gt;&amp;gt;= 27;
+  index &amp;amp;= (HASH_TABLE_SIZE - 1);
+  return index;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h4 id=&quot;section-8&quot;&gt;拷贝字符串函数&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//在堆上分配足以保存str的内存
+//并拷贝str内容到新分配位置
+char* strDup(const char* str)
+{
+    int len;
+    char* ret;
+    if (str == NULL)return NULL;
+
+    len = strlen(str);
+    ret = (char*)malloc(len + 1);
+    if (ret != NULL) {
+        memcpy(ret , str , len);
+        ret[len] = '\0';
+    }
+    return ret;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-9&quot;&gt;&lt;strong&gt;插入&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int insertTable(HASH_TABLE * T, char * key ,char * date)
+{
+  if (T==NULL || key==NULL || date==NULL)
+    return -1;
+  int index,len1,len2;
+  node * e,*eg;
+  index = keyToIndex(key);
+
+  if ( T-&amp;gt;bucket[index].key == NULL ) //如果此槽为空，直接插入新值
+  {
+    T-&amp;gt;bucket[index].key = strDup(key);
+    T-&amp;gt;bucket[index].date = strDup(date);
+  }
+  else　//如果不为空，则寻找是否存有此关键字，如果存了，改变其值
+  {
+    e = eg = &amp;amp;(T-&amp;gt;bucket[index]);
+    while(e!=NULL)       //先从已有的找
+    {
+      if( strcmp(e-&amp;gt;key,key)==0 )
+      {
+        len1 = strlen(date);
+        len2 = strlen(e-&amp;gt;date);
+        if (len1 &amp;gt; len2)
+        {
+          free(e-&amp;gt;date);
+          e-&amp;gt;date = (char*)malloc(len1 + 1);
+        }
+        memcpy(e-&amp;gt;date , date , len1 + 1);
+        return index;
+      }
+      eg = e;
+      e = eg-&amp;gt;next;
+    } //end while
+
+    //没有在当前桶中找到
+    //创建条目加入
+    e = (node *) malloc(sizeof(node));
+    e-&amp;gt;key = strDup(key);
+    e-&amp;gt;date = strDup(date);
+    e-&amp;gt;next = NULL;
+    eg-&amp;gt;next = e;
+  }
+  return index;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-10&quot;&gt;查找&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;char* searchHashTable(HASH_TABLE *T,char * key)
+{
+  if(T==NULL || key==NULL)
+  return NULL;
+  int index = keyToIndex(key);
+  node *e,*eg;
+  e = eg = &amp;amp;(T-&amp;gt;bucket[index]);
+  if ( e == NULL)
+    return NULL;
+  else
+  {
+    while (e!=NULL)
+    {
+      if (  e-&amp;gt;key!= NULL &amp;amp;&amp;amp; 0 == strcmp(e-&amp;gt;key,key) )
+        return e-&amp;gt;date;
+      e = e-&amp;gt;next;
+    }
+  }
+  return NULL;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-11&quot;&gt;删除&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//在哈希表中查找key对应的node
+//找到了返回node(在T-&amp;gt;bucket[index]中)，并将其从哈希表中移除
+//没找到返T-&amp;gt;buckut[index] = e-&amp;gt;next;回NULL
+node * delete_from_hashtable( HASH_TABLE *T , char *key)
+{
+  if ( T==NULL || key==NULL )
+    return NULL;
+  int index=keyToIndex(key);
+  node *e,*eg;
+  node* result;
+  int len;
+
+  e = eg = &amp;amp;(T-&amp;gt;bucket[index]);
+  if( e == NULL)
+    return NULL;
+  else
+  {
+    while( e!=NULL )
+    {
+      if( strcmp(e-&amp;gt;key,key)==0 )
+      {
+        if( e == &amp;amp;(T-&amp;gt;bucket[index]) ) //判断是否存储在bucket中，如果是就之间将此node的next指针存入bucket,eg是记录前一节点，方便删除
+        {
+          eg = e-&amp;gt;next;
+          e-&amp;gt;next = NULL;
+          result = e;
+          return result;
+        }
+        else
+        {
+          eg-&amp;gt;next = e-&amp;gt;next;
+          e-&amp;gt;next = NULL;
+          result = e;
+          return result;
+        }
+
+      }
+      else
+      {
+        eg = e;
+        e = e-&amp;gt;next;
+      }
+    }
+  }
+  return NULL;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-12&quot;&gt;打印散列表&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void printTable(HASH_TABLE *T)
+{
+  if(T == NULL)
+    return;
+  node* e;
+  int i;
+  for(i=0;i&amp;lt;HASH_TABLE_SIZE;i++)
+  {
+    printf(&quot;\nbucket[%d]:\n&quot; , i);
+    e = &amp;amp;(T-&amp;gt;bucket[i]);
+    while(e!=NULL)
+    {
+      printf(&quot;\t%s:%s\t\n&quot;,e-&amp;gt;key,e-&amp;gt;date );
+      e = e-&amp;gt;next;
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-13&quot;&gt;测试&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int main()
+{
+    HASH_TABLE T;
+    initHashTable(&amp;amp;T);
+
+    insertTable(&amp;amp;T , &quot;电脑型号&quot; , &quot;华硕 X550JK 笔记本电脑&quot;);
+    insertTable(&amp;amp;T , &quot;操作系统&quot; , &quot;Windows 8.1 64位 (DirectX 11)&quot;);
+    insertTable(&amp;amp;T , &quot;处理器&quot; , &quot;英特尔 Core i7 - 4710HQ @ 2.50GHz 四核&quot;);
+    insertTable(&amp;amp;T , &quot;主板&quot; , &quot;华硕 X550JK(英特尔 Haswell)&quot;);
+    insertTable(&amp;amp;T , &quot;内存&quot; , &quot;4 GB(Hynix / Hyundai)&quot;);
+    insertTable(&amp;amp;T , &quot;主硬盘&quot; , &quot;日立 HGST HTS541010A9E680(1 TB / 5400 转 / 分)&quot;);
+    insertTable(&amp;amp;T , &quot;显卡&quot; , &quot;NVIDIA GeForce GTX 850M       (2 GB / 华硕)&quot;);
+    insertTable(&amp;amp;T , &quot;显示器&quot; , &quot;奇美 CMN15C4(15.3 英寸)&quot;);
+    insertTable(&amp;amp;T , &quot;光驱&quot; , &quot;松下 DVD - RAM UJ8E2 S DVD刻录机&quot;);
+    insertTable(&amp;amp;T , &quot;声卡&quot; , &quot;Conexant SmartAudio HD @ 英特尔 Lynx Point 高保真音频&quot;);
+    insertTable(&amp;amp;T , &quot;网卡&quot; , &quot;瑞昱 RTL8168 / 8111 / 8112 Gigabit Ethernet Controller / 华硕&quot;);
+    insertTable(&amp;amp;T , &quot;主板型号&quot; , &quot;华硕 X550JK&quot;);
+    insertTable(&amp;amp;T , &quot;芯片组&quot; , &quot;英特尔 Haswell&quot;);
+    insertTable(&amp;amp;T , &quot;BIOS&quot; , &quot;X550JK.301&quot;);
+    insertTable(&amp;amp;T , &quot;制造日期&quot; , &quot;06 / 26 / 2014&quot;);
+    insertTable(&amp;amp;T , &quot;主人&quot; , &quot;就是我&quot;);
+    insertTable(&amp;amp;T , &quot;价格&quot; , &quot;六十张红色毛主席&quot;);
+    insertTable(&amp;amp;T , &quot;主硬盘&quot; , &quot;换了个120G的固态&quot;);
+
+    node* e = delete_from_hashtable(&amp;amp;T , &quot;主板型号&quot;);
+    if (e != NULL) {
+        puts(&quot;找到后要释放&quot;);
+        free(e-&amp;gt;key);
+        free(e-&amp;gt;date);
+        free(e);
+        e = NULL;
+    }
+
+    printTable(&amp;amp;T);
+
+    char* keys[] = { &quot;显示器&quot; , &quot;主人&quot;,&quot;没有&quot; , &quot;处理器&quot; };
+    for (int i = 0; i &amp;lt; 4; ++i) {
+        char* value = searchHashTable(&amp;amp;T ,keys[i] );
+        if (value != NULL) {
+            printf(&quot;find %s\t=\t%s\n&quot; ,keys[i], value);
+        }
+        else {
+            printf(&quot;not found %s\n&quot;,keys[i]);
+        }
+    }
+
+
+    freeHashTable(&amp;amp;T);
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;open-addressing&quot;&gt;开放寻址法(open addressing)&lt;/h2&gt;
+
+&lt;p&gt;在开放寻址法中，所有元素都存在散列表中。每个表项都存在一个元素，或是NULL。该方法存储的元素数不能超过散列表的大小，好处就是不用存储指针节约了空间。&lt;/p&gt;
+
+&lt;p&gt;为了使用开放寻址法插入一个元素，需要连续的检查散列表，直到检查到一个空槽来插入关键字为止。 &lt;strong&gt;检查的顺序不是从头到尾，而依赖于关键词。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;于是，散列函数就变为 &lt;em&gt;h(key,index)&lt;/em&gt; ,对于每个关键词，都存在这样一个排列　&lt;em&gt;( h(key,0),h(key,1)…h(key,m-1) )&lt;/em&gt;。&lt;/p&gt;
+
+&lt;p&gt;代码如下：&lt;/p&gt;
+
+&lt;h4 id=&quot;section-14&quot;&gt;结构定义和初始化&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;typedef struct _node{
+  char *key;
+  char *value;
+} node;
+
+typedef struct HASH_TABLE{
+  node bucket[HASH_TABLE_SIZE];
+}HASH_TABLE;
+
+void initHashTable(HASH_TABLE *T){
+  int i;
+  if ( T==NULL) return;
+  for (i=0; i&amp;lt;HASH_TABLE_SIZE; i++){
+    T-&amp;gt;bucket[i].key = NULL;
+    T-&amp;gt;bucket[i].value = NULL;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-15&quot;&gt;散列函数&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int keyToIndex(char *key,int index){
+  if(key==NULL){
+    printf(&quot;hash function parameter error\n&quot;);
+    return -1;
+  }
+  if(index&amp;lt;0 || index&amp;gt;HASH_TABLE_SIZE){
+    printf(&quot;index:\t%d\terror\n&quot;,index );
+    return -1;
+  }
+  int result;
+  int k,i;
+  int h1,h2;
+  int length = strlen(key);
+  k = (int)key[0];
+  for(i=1;i&amp;lt;length;i++){
+    k *= (int)key[i]+1103515245;
+  }
+  k &amp;gt;&amp;gt;=27;
+
+  h1 = k&amp;amp;(HASH_TABLE_SIZE-1);
+  h2 = 1 + (k &amp;amp; (HASH_TABLE_SIZE-2));
+  result = ( h1 + index*h2 )%HASH_TABLE_SIZE;
+  return result;
+}
+//拷贝字符串函数
+char* strDup(char *str){
+  int length;
+  char * result;
+  if ( str == NULL )
+    return NULL;
+  length = strlen(str);
+  result = (char *)malloc( (length+1)*sizeof(char) );
+  if (result != NULL){
+    memcpy(result,str,length);
+    result[length] = '\0';
+  }
+  return result;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-16&quot;&gt;插入&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int insertTable(HASH_TABLE *T, char *key, char *value){
+  int i=0;
+  if(T==NULL || key==NULL) return -1;
+
+  while (i!=HASH_TABLE_SIZE){
+    int j = keyToIndex(key,i);
+    //按照散列函数序列插入，此处需判断是否有删除元素
+    if ( (T-&amp;gt;bucket[j].key==NULL) || (strcmp(T-&amp;gt;bucket[j].key,&quot;HASH_DELETE&quot;) == 0 )){
+      T-&amp;gt;bucket[j].key = strDup(key);
+      T-&amp;gt;bucket[j].value = strDup(value);
+      return j;
+    }
+    else
+     i++;
+  }
+  printf(&quot;error:\thash table overflow\n&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-17&quot;&gt;查找&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;char* searchHashTable(HASH_TABLE *T,char *key){
+  if(T==NULL || key==NULL)  return NULL;
+  int i=0;
+  int j = keyToIndex(key,i);//按照散列函数序列查找
+  while ( T-&amp;gt;bucket[j].key!=NULL &amp;amp;&amp;amp; i&amp;lt;HASH_TABLE_SIZE ){
+    if ( strcmp(T-&amp;gt;bucket[j].key,key)==0 )
+      return T-&amp;gt;bucket[j].value;
+    i++;
+    j = keyToIndex(key,i);
+  }
+  return NULL;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-18&quot;&gt;删除&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;从散列表中删除相关表项，并且返回删除元素的指针&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;删除元素不能简单将其置为&lt;code class=&quot;highlighter-rouge&quot;&gt;NULL&lt;/code&gt;，若是如此，可能会给查找带来BUG，将其置为&lt;code class=&quot;highlighter-rouge&quot;&gt;HASH_DELETE&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;node* delete_from_hashtable(HASH_TABLE *T,char *key){
+  if(T==NULL || key==NULL) return NULL;
+  int i=0;
+  node *result = (node *) malloc (sizeof(node));
+  int j = keyToIndex(key,i);
+  while ( T-&amp;gt;bucket[j].key!=NULL &amp;amp;&amp;amp; i&amp;lt;HASH_TABLE_SIZE ){
+    j = keyToIndex(key,i);
+    if ( strcmp(T-&amp;gt;bucket[j].key,key) == 0 ){
+      result-&amp;gt;key = strDup(key);
+      result-&amp;gt;value = strDup(T-&amp;gt;bucket[j].value);
+      T-&amp;gt;bucket[j].key = strDup(&quot;HASH_DELETE&quot;);
+      T-&amp;gt;bucket[j].value = NULL;
+      return result;
+    }
+    i++;
+  }
+  return NULL;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-19&quot;&gt;打印散列表&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void printTable(HASH_TABLE *T){
+  if(T==NULL) return;
+  int i;
+  for (i=0;i&amp;lt;HASH_TABLE_SIZE;i++){
+    printf(&quot;\nbucket[%d]:\n&quot;,i);
+    printf(&quot;\t%s\t=\t%s\n&quot;,T-&amp;gt;bucket[i].key,T-&amp;gt;bucket[i].value );
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-20&quot;&gt;测试&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int main()
+{
+    HASH_TABLE T;
+    initHashTable(&amp;amp;T);
+
+    insertTable(&amp;amp;T , &quot;电脑型号&quot; , &quot;华硕 X550JK 笔记本电脑&quot;);
+    insertTable(&amp;amp;T , &quot;操作系统&quot; , &quot;Windows 8.1 64位 (DirectX 11)&quot;);
+    insertTable(&amp;amp;T , &quot;处理器&quot; , &quot;英特尔 Core i7 - 4710HQ @ 2.50GHz 四核&quot;);
+    insertTable(&amp;amp;T , &quot;主板&quot; , &quot;华硕 X550JK(英特尔 Haswell)&quot;);
+    insertTable(&amp;amp;T , &quot;内存&quot; , &quot;4 GB(Hynix / Hyundai)&quot;);
+    insertTable(&amp;amp;T , &quot;主硬盘&quot; , &quot;日立 HGST HTS541010A9E680(1 TB / 5400 转 / 分)&quot;);
+    insertTable(&amp;amp;T , &quot;显卡&quot; , &quot;NVIDIA GeForce GTX 850M       (2 GB / 华硕)&quot;);
+    insertTable(&amp;amp;T , &quot;显示器&quot; , &quot;奇美 CMN15C4(15.3 英寸)&quot;);
+    insertTable(&amp;amp;T , &quot;光驱&quot; , &quot;松下 DVD - RAM UJ8E2 S DVD刻录机&quot;);
+    insertTable(&amp;amp;T , &quot;声卡&quot; , &quot;Conexant SmartAudio HD @ 英特尔 Lynx Point 高保真音频&quot;);
+    insertTable(&amp;amp;T , &quot;网卡&quot; , &quot;瑞昱 RTL8168 / 8111 / 8112 Gigabit Ethernet Controller / 华硕&quot;);
+    insertTable(&amp;amp;T , &quot;主板型号&quot; , &quot;华硕 X550JK&quot;);
+    insertTable(&amp;amp;T , &quot;芯片组&quot; , &quot;英特尔 Haswell&quot;);
+    insertTable(&amp;amp;T , &quot;BIOS&quot; , &quot;X550JK.301&quot;);
+    insertTable(&amp;amp;T , &quot;制造日期&quot; , &quot;06 / 26 / 2014&quot;);
+    insertTable(&amp;amp;T , &quot;主人&quot; , &quot;就是我&quot;);
+    insertTable(&amp;amp;T , &quot;价格&quot; , &quot;六十张红色毛主席&quot;);
+    insertTable(&amp;amp;T , &quot;主硬盘&quot; , &quot;换了个120G的固态&quot;);
+
+    node* e = delete_from_hashtable(&amp;amp;T , &quot;主板型号&quot;);
+    if (e != NULL) {
+        puts(&quot;找到后要释放&quot;);
+        free(e-&amp;gt;key);
+        free(e-&amp;gt;value);
+        free(e);
+        e = NULL;
+    }
+    insertTable(&amp;amp;T , &quot;主板型号&quot; , &quot;华硕 X550JK&quot;);
+
+    printTable(&amp;amp;T);
+
+    char* keys[] = { &quot;显示器&quot; , &quot;主人&quot;,&quot;没有&quot; , &quot;处理器&quot; };
+    for (int i = 0; i &amp;lt; 4; ++i) {
+        char* value = searchHashTable(&amp;amp;T ,keys[i] );
+        if (value != NULL) {
+            printf(&quot;find %s\t=\t%s\n&quot; ,keys[i], value);
+        }
+        else {
+            printf(&quot;not found %s\n&quot;,keys[i]);
+        }
+    }
+
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Tue, 21 Mar 2017 00:00:00 +0800</pubDate>
+        <link>/2017/03/21/Hash_Table_1/</link>
+        <guid isPermaLink="true">/2017/03/21/Hash_Table_1/</guid>
+        
+        <category>算法</category>
+        
+        <category>编程</category>
+        
+        
+      </item>
     
       <item>
         <title>堆的性质以及堆排序</title>

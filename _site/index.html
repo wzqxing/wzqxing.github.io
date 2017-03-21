@@ -154,6 +154,83 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/03/21/Hash_table_2/">
+        <h2 class="post-title">
+            散列表原理及散列函数
+        </h2>
+        
+        <h3 class="post-subtitle">
+            深刻讨论散列表
+        </h3>
+        
+        <div class="post-content-preview">
+            散列表
+
+散列表是一种字典数据结构，主要有三种操作：
+
+
+  插入
+  查找
+  删除
+
+
+散列表的三种操作的时间代价都是 O(1)，但是这个是用空间代价换取而来。
+
+原理
+
+为何散列表在插入、查找、删除上如此高效？
+
+这主要是因为散列表通过 散列函数 用关键字 (key) 计算出结点的存储地址然后直接访问，这个时间与散列表的长度无关。
+
+在这个过程中，散列函数的好坏，很大程度上决定了散列表...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 沉默者说 on March 21, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/03/21/Hash_Table_1/">
+        <h2 class="post-title">
+            散列表的实现
+        </h2>
+        
+        <h3 class="post-subtitle">
+            C语言
+        </h3>
+        
+        <div class="post-content-preview">
+            散列表
+
+散列表(hash table)是实现字典操作的一种有效的数据结构。
+
+
+  
+    在合理的构建散列函数下，查找一个元素的平均时间是O(1)。
+  
+  
+    散列表利用散列函数计算出数据的存储地址。
+  
+
+
+如果两个关键字通过散列函数计算出的存储地址相同，这种情况叫做冲突，主要有两种情况来解决这个问题：链接法和开放寻址法。
+
+散列函数
+
+
+  
+    好的散列函数的特点...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 沉默者说 on March 21, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2016/11/27/heap_sort/">
         <h2 class="post-title">
             堆的性质以及堆排序
@@ -331,6 +408,16 @@ let "x ...
                             
                         
                             
+                                <a href="/tags/#编程" title="编程" rel="2">
+                                    编程
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#算法" title="算法" rel="3">
+                                    算法
+                                </a>
+                            
                         
                             
                         
@@ -387,7 +474,7 @@ let "x ...
                     
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; 沉默者说 2016
+                    Copyright &copy; 沉默者说 2017
                     <br>
 <!--                    Theme by <a href="http://huangxuan.me">Hux</a> |
                     <iframe

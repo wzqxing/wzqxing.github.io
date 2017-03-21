@@ -1,0 +1,562 @@
+---
+layout:     post
+title:      "散列表的实现"
+subtitle:   "C语言"
+data:       2017-03-21
+authori:    "silence"
+header-img: ""
+tags:
+        - 算法
+        - 编程
+
+
+
+---
+
+
+
+
+## 散列表
+
+散列表(*hash table*)是实现字典操作的一种有效的数据结构。
+
+- 在合理的构建散列函数下，查找一个元素的平均时间是O(1)。
+
+- 散列表利用散列函数计算出数据的存储地址。
+
+如果两个关键字通过散列函数计算出的存储地址相同，这种情况叫做冲突，主要有两种情况来解决这个问题：链接法和开放寻址法。
+
+## 散列函数
+
+- 好的散列函数的特点
+
+  一个好的散列函数应（近似地）满足简单均匀假设：每个关键字都等可能的散列到　*m*　个槽中。
+
+- 将关键字转化为自然数
+
+## 链接法
+
+在链接法中，把散列到同一槽中的所有元素都放入一个链表中。此时数据结构应定义如下：
+
+#### 结点
+
+```
+typedef struct _node
+{
+  char *key;\\关键字
+  char *date;\\值
+  struct _node * next;\\同一槽中下一个结点指针
+} node;
+```
+
+#### 散列表
+
+```
+typedef struct HASH_TABLE
+{
+  node bucket[HASH_TABLE_SIZE];
+} HASH_TABLE;
+```
+
+#### 初始化
+
+```
+void initHashTable( HASH_TABLE *T)
+{
+  if (T==NULL)
+    return;
+  else
+  {
+    int i;
+    for(i=0;i<HASH_TABLE_SIZE;i++)
+    {
+      T->bucket[i].key=NULL;
+      T->bucket[i].date=NULL;
+      T->bucket[i].next=NULL;
+    }
+  }
+}
+```
+
+#### 释放散列表内存
+
+>只能释放非存储在`bucket[]`的结点
+
+```
+void freeHashTable( HASH_TABLE *T)
+{
+  int i;
+  node* e,*ep;
+  if (T==NULL)
+    return;
+
+  for(i=0;i<HASH_TABLE_SIZE;i++)
+  {
+    e = &(T->bucket[i]);
+    while (e->next!=NULL)
+    {
+      ep = e->next;
+      e->next = ep->next;
+      free(ep->key);
+      free(ep->date);
+      free(ep);
+    }
+  }
+}
+```
+
+#### 定义散列函数
+
+>一个散列表的性能主要看散列函数如何
+
+```
+//哈希表散列函数
+int keyToIndex(char *key)
+{
+  int length,index,i;
+  length = strlen(key);
+
+  if(key==NULL)
+    return -1;
+  index = (int) key[0];
+
+  for(i=１;i<length;i++)
+  {
+    index *= 1103515245 + (int)key[i];
+  }
+  index >>= 27;
+  index &= (HASH_TABLE_SIZE - 1);
+  return index;
+}
+```
+#### 拷贝字符串函数
+
+```
+//在堆上分配足以保存str的内存
+//并拷贝str内容到新分配位置
+char* strDup(const char* str)
+{
+    int len;
+    char* ret;
+    if (str == NULL)return NULL;
+
+    len = strlen(str);
+    ret = (char*)malloc(len + 1);
+    if (ret != NULL) {
+        memcpy(ret , str , len);
+        ret[len] = '\0';
+    }
+    return ret;
+}
+```
+
+#### **插入**
+
+```
+int insertTable(HASH_TABLE * T, char * key ,char * date)
+{
+  if (T==NULL || key==NULL || date==NULL)
+    return -1;
+  int index,len1,len2;
+  node * e,*eg;
+  index = keyToIndex(key);
+
+  if ( T->bucket[index].key == NULL ) //如果此槽为空，直接插入新值
+  {
+    T->bucket[index].key = strDup(key);
+    T->bucket[index].date = strDup(date);
+  }
+  else　//如果不为空，则寻找是否存有此关键字，如果存了，改变其值
+  {
+    e = eg = &(T->bucket[index]);
+    while(e!=NULL)       //先从已有的找
+    {
+      if( strcmp(e->key,key)==0 )
+      {
+        len1 = strlen(date);
+        len2 = strlen(e->date);
+        if (len1 > len2)
+        {
+          free(e->date);
+          e->date = (char*)malloc(len1 + 1);
+        }
+        memcpy(e->date , date , len1 + 1);
+        return index;
+      }
+      eg = e;
+      e = eg->next;
+    } //end while
+
+    //没有在当前桶中找到
+    //创建条目加入
+    e = (node *) malloc(sizeof(node));
+    e->key = strDup(key);
+    e->date = strDup(date);
+    e->next = NULL;
+    eg->next = e;
+  }
+  return index;
+}
+```
+
+
+#### 查找
+
+```
+char* searchHashTable(HASH_TABLE *T,char * key)
+{
+  if(T==NULL || key==NULL)
+  return NULL;
+  int index = keyToIndex(key);
+  node *e,*eg;
+  e = eg = &(T->bucket[index]);
+  if ( e == NULL)
+    return NULL;
+  else
+  {
+    while (e!=NULL)
+    {
+      if (  e->key!= NULL && 0 == strcmp(e->key,key) )
+        return e->date;
+      e = e->next;
+    }
+  }
+  return NULL;
+}
+```
+
+#### 删除
+
+```
+//在哈希表中查找key对应的node
+//找到了返回node(在T->bucket[index]中)，并将其从哈希表中移除
+//没找到返T->buckut[index] = e->next;回NULL
+node * delete_from_hashtable( HASH_TABLE *T , char *key)
+{
+  if ( T==NULL || key==NULL )
+    return NULL;
+  int index=keyToIndex(key);
+  node *e,*eg;
+  node* result;
+  int len;
+
+  e = eg = &(T->bucket[index]);
+  if( e == NULL)
+    return NULL;
+  else
+  {
+    while( e!=NULL )
+    {
+      if( strcmp(e->key,key)==0 )
+      {
+        if( e == &(T->bucket[index]) ) //判断是否存储在bucket中，如果是就之间将此node的next指针存入bucket,eg是记录前一节点，方便删除
+        {
+          eg = e->next;
+          e->next = NULL;
+          result = e;
+          return result;
+        }
+        else
+        {
+          eg->next = e->next;
+          e->next = NULL;
+          result = e;
+          return result;
+        }
+
+      }
+      else
+      {
+        eg = e;
+        e = e->next;
+      }
+    }
+  }
+  return NULL;
+}
+```
+
+#### 打印散列表
+
+```
+void printTable(HASH_TABLE *T)
+{
+  if(T == NULL)
+    return;
+  node* e;
+  int i;
+  for(i=0;i<HASH_TABLE_SIZE;i++)
+  {
+    printf("\nbucket[%d]:\n" , i);
+    e = &(T->bucket[i]);
+    while(e!=NULL)
+    {
+      printf("\t%s:%s\t\n",e->key,e->date );
+      e = e->next;
+    }
+  }
+}
+```
+
+#### 测试
+
+```
+int main()
+{
+    HASH_TABLE T;
+    initHashTable(&T);
+
+    insertTable(&T , "电脑型号" , "华硕 X550JK 笔记本电脑");
+    insertTable(&T , "操作系统" , "Windows 8.1 64位 (DirectX 11)");
+    insertTable(&T , "处理器" , "英特尔 Core i7 - 4710HQ @ 2.50GHz 四核");
+    insertTable(&T , "主板" , "华硕 X550JK(英特尔 Haswell)");
+    insertTable(&T , "内存" , "4 GB(Hynix / Hyundai)");
+    insertTable(&T , "主硬盘" , "日立 HGST HTS541010A9E680(1 TB / 5400 转 / 分)");
+    insertTable(&T , "显卡" , "NVIDIA GeForce GTX 850M       (2 GB / 华硕)");
+    insertTable(&T , "显示器" , "奇美 CMN15C4(15.3 英寸)");
+    insertTable(&T , "光驱" , "松下 DVD - RAM UJ8E2 S DVD刻录机");
+    insertTable(&T , "声卡" , "Conexant SmartAudio HD @ 英特尔 Lynx Point 高保真音频");
+    insertTable(&T , "网卡" , "瑞昱 RTL8168 / 8111 / 8112 Gigabit Ethernet Controller / 华硕");
+    insertTable(&T , "主板型号" , "华硕 X550JK");
+    insertTable(&T , "芯片组" , "英特尔 Haswell");
+    insertTable(&T , "BIOS" , "X550JK.301");
+    insertTable(&T , "制造日期" , "06 / 26 / 2014");
+    insertTable(&T , "主人" , "就是我");
+    insertTable(&T , "价格" , "六十张红色毛主席");
+    insertTable(&T , "主硬盘" , "换了个120G的固态");
+
+    node* e = delete_from_hashtable(&T , "主板型号");
+    if (e != NULL) {
+        puts("找到后要释放");
+        free(e->key);
+        free(e->date);
+        free(e);
+        e = NULL;
+    }
+
+    printTable(&T);
+
+    char* keys[] = { "显示器" , "主人","没有" , "处理器" };
+    for (int i = 0; i < 4; ++i) {
+        char* value = searchHashTable(&T ,keys[i] );
+        if (value != NULL) {
+            printf("find %s\t=\t%s\n" ,keys[i], value);
+        }
+        else {
+            printf("not found %s\n",keys[i]);
+        }
+    }
+
+
+    freeHashTable(&T);
+    return 0;
+}
+```
+
+## 开放寻址法(open addressing)
+
+在开放寻址法中，所有元素都存在散列表中。每个表项都存在一个元素，或是NULL。该方法存储的元素数不能超过散列表的大小，好处就是不用存储指针节约了空间。
+
+为了使用开放寻址法插入一个元素，需要连续的检查散列表，直到检查到一个空槽来插入关键字为止。 **检查的顺序不是从头到尾，而依赖于关键词。**
+
+于是，散列函数就变为 *h(key,index)* ,对于每个关键词，都存在这样一个排列　*( h(key,0),h(key,1)...h(key,m-1) )*。
+
+代码如下：
+
+#### 结构定义和初始化
+
+```
+typedef struct _node{
+  char *key;
+  char *value;
+} node;
+
+typedef struct HASH_TABLE{
+  node bucket[HASH_TABLE_SIZE];
+}HASH_TABLE;
+
+void initHashTable(HASH_TABLE *T){
+  int i;
+  if ( T==NULL) return;
+  for (i=0; i<HASH_TABLE_SIZE; i++){
+    T->bucket[i].key = NULL;
+    T->bucket[i].value = NULL;
+  }
+}
+```
+
+#### 散列函数
+
+```
+int keyToIndex(char *key,int index){
+  if(key==NULL){
+    printf("hash function parameter error\n");
+    return -1;
+  }
+  if(index<0 || index>HASH_TABLE_SIZE){
+    printf("index:\t%d\terror\n",index );
+    return -1;
+  }
+  int result;
+  int k,i;
+  int h1,h2;
+  int length = strlen(key);
+  k = (int)key[0];
+  for(i=1;i<length;i++){
+    k *= (int)key[i]+1103515245;
+  }
+  k >>=27;
+
+  h1 = k&(HASH_TABLE_SIZE-1);
+  h2 = 1 + (k & (HASH_TABLE_SIZE-2));
+  result = ( h1 + index*h2 )%HASH_TABLE_SIZE;
+  return result;
+}
+//拷贝字符串函数
+char* strDup(char *str){
+  int length;
+  char * result;
+  if ( str == NULL )
+    return NULL;
+  length = strlen(str);
+  result = (char *)malloc( (length+1)*sizeof(char) );
+  if (result != NULL){
+    memcpy(result,str,length);
+    result[length] = '\0';
+  }
+  return result;
+}
+```
+
+#### 插入
+
+```
+int insertTable(HASH_TABLE *T, char *key, char *value){
+  int i=0;
+  if(T==NULL || key==NULL) return -1;
+
+  while (i!=HASH_TABLE_SIZE){
+    int j = keyToIndex(key,i);
+    //按照散列函数序列插入，此处需判断是否有删除元素
+    if ( (T->bucket[j].key==NULL) || (strcmp(T->bucket[j].key,"HASH_DELETE") == 0 )){
+      T->bucket[j].key = strDup(key);
+      T->bucket[j].value = strDup(value);
+      return j;
+    }
+    else
+     i++;
+  }
+  printf("error:\thash table overflow\n");
+}
+```
+
+#### 查找
+
+```
+char* searchHashTable(HASH_TABLE *T,char *key){
+  if(T==NULL || key==NULL)  return NULL;
+  int i=0;
+  int j = keyToIndex(key,i);//按照散列函数序列查找
+  while ( T->bucket[j].key!=NULL && i<HASH_TABLE_SIZE ){
+    if ( strcmp(T->bucket[j].key,key)==0 )
+      return T->bucket[j].value;
+    i++;
+    j = keyToIndex(key,i);
+  }
+  return NULL;
+}
+```
+
+#### 删除
+
+>从散列表中删除相关表项，并且返回删除元素的指针
+
+删除元素不能简单将其置为`NULL`，若是如此，可能会给查找带来BUG，将其置为`HASH_DELETE`
+
+```
+node* delete_from_hashtable(HASH_TABLE *T,char *key){
+  if(T==NULL || key==NULL) return NULL;
+  int i=0;
+  node *result = (node *) malloc (sizeof(node));
+  int j = keyToIndex(key,i);
+  while ( T->bucket[j].key!=NULL && i<HASH_TABLE_SIZE ){
+    j = keyToIndex(key,i);
+    if ( strcmp(T->bucket[j].key,key) == 0 ){
+      result->key = strDup(key);
+      result->value = strDup(T->bucket[j].value);
+      T->bucket[j].key = strDup("HASH_DELETE");
+      T->bucket[j].value = NULL;
+      return result;
+    }
+    i++;
+  }
+  return NULL;
+}
+```
+
+#### 打印散列表
+
+```
+void printTable(HASH_TABLE *T){
+  if(T==NULL) return;
+  int i;
+  for (i=0;i<HASH_TABLE_SIZE;i++){
+    printf("\nbucket[%d]:\n",i);
+    printf("\t%s\t=\t%s\n",T->bucket[i].key,T->bucket[i].value );
+  }
+}
+```
+
+#### 测试
+
+```
+int main()
+{
+    HASH_TABLE T;
+    initHashTable(&T);
+
+    insertTable(&T , "电脑型号" , "华硕 X550JK 笔记本电脑");
+    insertTable(&T , "操作系统" , "Windows 8.1 64位 (DirectX 11)");
+    insertTable(&T , "处理器" , "英特尔 Core i7 - 4710HQ @ 2.50GHz 四核");
+    insertTable(&T , "主板" , "华硕 X550JK(英特尔 Haswell)");
+    insertTable(&T , "内存" , "4 GB(Hynix / Hyundai)");
+    insertTable(&T , "主硬盘" , "日立 HGST HTS541010A9E680(1 TB / 5400 转 / 分)");
+    insertTable(&T , "显卡" , "NVIDIA GeForce GTX 850M       (2 GB / 华硕)");
+    insertTable(&T , "显示器" , "奇美 CMN15C4(15.3 英寸)");
+    insertTable(&T , "光驱" , "松下 DVD - RAM UJ8E2 S DVD刻录机");
+    insertTable(&T , "声卡" , "Conexant SmartAudio HD @ 英特尔 Lynx Point 高保真音频");
+    insertTable(&T , "网卡" , "瑞昱 RTL8168 / 8111 / 8112 Gigabit Ethernet Controller / 华硕");
+    insertTable(&T , "主板型号" , "华硕 X550JK");
+    insertTable(&T , "芯片组" , "英特尔 Haswell");
+    insertTable(&T , "BIOS" , "X550JK.301");
+    insertTable(&T , "制造日期" , "06 / 26 / 2014");
+    insertTable(&T , "主人" , "就是我");
+    insertTable(&T , "价格" , "六十张红色毛主席");
+    insertTable(&T , "主硬盘" , "换了个120G的固态");
+
+    node* e = delete_from_hashtable(&T , "主板型号");
+    if (e != NULL) {
+        puts("找到后要释放");
+        free(e->key);
+        free(e->value);
+        free(e);
+        e = NULL;
+    }
+    insertTable(&T , "主板型号" , "华硕 X550JK");
+
+    printTable(&T);
+
+    char* keys[] = { "显示器" , "主人","没有" , "处理器" };
+    for (int i = 0; i < 4; ++i) {
+        char* value = searchHashTable(&T ,keys[i] );
+        if (value != NULL) {
+            printf("find %s\t=\t%s\n" ,keys[i], value);
+        }
+        else {
+            printf("not found %s\n",keys[i]);
+        }
+    }
+
+    return 0;
+}
+```
