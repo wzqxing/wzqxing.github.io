@@ -5,12 +5,12 @@
     <description>喃喃自语，唯有沉默</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 21 Mar 2017 19:10:13 +0800</pubDate>
-    <lastBuildDate>Tue, 21 Mar 2017 19:10:13 +0800</lastBuildDate>
+    <pubDate>Wed, 22 Mar 2017 22:02:22 +0800</pubDate>
+    <lastBuildDate>Wed, 22 Mar 2017 22:02:22 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
-        <title>散列表原理及散列函数</title>
+        <title>散列表原理、散列函数以及线性排序</title>
         <description>&lt;h2 id=&quot;section&quot;&gt;散列表&lt;/h2&gt;
 
 &lt;p&gt;散列表是一种字典数据结构，主要有三种操作：&lt;/p&gt;
@@ -73,6 +73,22 @@
 &lt;p&gt;散列表的特性使得它经常被用来以空间换取时间。在《算法导论》中介绍了三种线性排序算法：计数排序、基数排序、桶排序。&lt;/p&gt;
 
 &lt;p&gt;这三种排序算法都是在特定条件下，抛弃比较排序思路，打破 &lt;strong&gt;&lt;em&gt;O(nlogn)&lt;/em&gt;&lt;/strong&gt; 的时间限制，运用散列表的思想使得排序的运行时间下降为 &lt;em&gt;O(n)&lt;/em&gt; 。而散列表的关键在于散列函数的设计。一个满足要求的好的散列函数，可以高效的提升算法效率。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-5&quot;&gt;线性时间排序&lt;/h2&gt;
+
+&lt;p&gt;排序算法的下界是 &lt;em&gt;O(n)&lt;/em&gt; ，如何达到这个时间呢？&lt;/p&gt;
+
+&lt;p&gt;参考书中提到的几种线性排序算法，要实现线性排序，要清楚的知道所排序元素的分布规律和所在范围。然后设计出合适的散列函数，这个散列函数有这么几个特点：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;散列变换前后关键字的相对顺序不变(必要条件)&lt;/li&gt;
+  &lt;li&gt;散列变换后的值尽可能的分布从0到n(节约空间)&lt;/li&gt;
+  &lt;li&gt;散列函数本身的运行时间是一个常数，要不然就没意义&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;从 &lt;em&gt;O(nlogn)&lt;/em&gt; 到 &lt;em&gt;O(n)&lt;/em&gt; 这个不仅仅是牺牲空间代价换来的，还有信息代价。例如计数排序，它要求的元素分布是从0到n-1，它实际的散列函数就是　&lt;strong&gt;&lt;em&gt;h(k) = k&lt;/em&gt;&lt;/strong&gt;　。还有位图结构处理海量数据，这个也是散列表的一个变种。&lt;/p&gt;
+
+&lt;p&gt;从上面分析看来，写出这样的散列函数很困难，那么，有没有这样一种可能：我们知道一部分信息，然后通过某种手段将这些信息加入设计的排序算法中，使得算法的运行时间介于 &lt;em&gt;O(nlogn)&lt;/em&gt; 和 &lt;em&gt;O(n)&lt;/em&gt; 之间，空间代价低于 &lt;em&gt;O(n)&lt;/em&gt; 。我认为这种算法是存在的，希望诸君与我共勉，找到这种算法。&lt;/p&gt;
 </description>
         <pubDate>Tue, 21 Mar 2017 00:00:00 +0800</pubDate>
         <link>/2017/03/21/Hash_table_2/</link>

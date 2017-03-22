@@ -10,7 +10,7 @@
     <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>散列表原理及散列函数 - silence |  Blog</title>
+    <title>散列表原理、散列函数以及线性排序 - silence |  Blog</title>
 
     <link rel="canonical" href="/2017/03/21/Hash_table_2/">
 
@@ -145,10 +145,10 @@
                         <a class="tag" href="/tags/#数据结构" title="数据结构">数据结构</a>
                         
                     </div>
-                    <h1>散列表原理及散列函数</h1>
+                    <h1>散列表原理、散列函数以及线性排序</h1>
                     
                     
-                    <h2 class="subheading">深刻讨论散列表</h2>
+                    <h2 class="subheading">关于设计线性排序的一点猜想</h2>
                     
                     <span class="meta">Posted by 沉默者说 on March 21, 2017</span>
                 </div>
@@ -230,6 +230,22 @@
 <p>散列表的特性使得它经常被用来以空间换取时间。在《算法导论》中介绍了三种线性排序算法：计数排序、基数排序、桶排序。</p>
 
 <p>这三种排序算法都是在特定条件下，抛弃比较排序思路，打破 <strong><em>O(nlogn)</em></strong> 的时间限制，运用散列表的思想使得排序的运行时间下降为 <em>O(n)</em> 。而散列表的关键在于散列函数的设计。一个满足要求的好的散列函数，可以高效的提升算法效率。</p>
+
+<h2 id="section-5">线性时间排序</h2>
+
+<p>排序算法的下界是 <em>O(n)</em> ，如何达到这个时间呢？</p>
+
+<p>参考书中提到的几种线性排序算法，要实现线性排序，要清楚的知道所排序元素的分布规律和所在范围。然后设计出合适的散列函数，这个散列函数有这么几个特点：</p>
+
+<ul>
+  <li>散列变换前后关键字的相对顺序不变(必要条件)</li>
+  <li>散列变换后的值尽可能的分布从0到n(节约空间)</li>
+  <li>散列函数本身的运行时间是一个常数，要不然就没意义</li>
+</ul>
+
+<p>从 <em>O(nlogn)</em> 到 <em>O(n)</em> 这个不仅仅是牺牲空间代价换来的，还有信息代价。例如计数排序，它要求的元素分布是从0到n-1，它实际的散列函数就是　<strong><em>h(k) = k</em></strong>　。还有位图结构处理海量数据，这个也是散列表的一个变种。</p>
+
+<p>从上面分析看来，写出这样的散列函数很困难，那么，有没有这样一种可能：我们知道一部分信息，然后通过某种手段将这些信息加入设计的排序算法中，使得算法的运行时间介于 <em>O(nlogn)</em> 和 <em>O(n)</em> 之间，空间代价低于 <em>O(n)</em> 。我认为这种算法是存在的，希望诸君与我共勉，找到这种算法。</p>
 
 
                 <hr>
@@ -371,14 +387,8 @@
                 </ul>
                 <p class="copyright text-muted">
                     Copyright &copy; 沉默者说 2017
+                <br>boy.sil.encer.god@gmail.com
                     <br>
-<!--                    Theme by <a href="http://huangxuan.me">Hux</a> |
-                    <iframe
-                        style="margin-left: 2px; margin-bottom:-5px;"
-                        frameborder="0" scrolling="0" width="91px" height="20px"
-                        src="https://ghbtns.com/github-btn.html?user=huxpro&repo=huxpro.github.io&type=star&count=true" >
-                    </iframe>
--->
                 </p>
             </div>
         </div>
@@ -407,14 +417,14 @@
     }
 </script>
 
-<!-- 
-     Because of the native support for backtick-style fenced code blocks 
-     right within the Markdown is landed in Github Pages, 
-     From V1.6, There is no need for Highlight.js, 
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
      so Huxblog drops it officially.
 
-     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
-     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
 -->
 <!--
     <script>
@@ -440,14 +450,14 @@
     }
 </script>
 
-<!--fastClick.js -->
+<!--fastClick.js
 <script>
     async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
         var $nav = document.querySelector("nav");
         if($nav) FastClick.attach($nav);
     })
 </script>
-
+-->
 
 <!-- Google Analytics -->
 
