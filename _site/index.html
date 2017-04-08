@@ -154,6 +154,38 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/04/08/seek_parent/">
+        <h2 class="post-title">
+            寻找无父指针二叉树的父结点算法
+        </h2>
+        
+        <h3 class="post-subtitle">
+            代码
+        </h3>
+        
+        <div class="post-content-preview">
+            无父指针二叉树
+
+一般来讲，二叉树在计算机内部的存储结构是二叉链表，包含一个关键字和左右子数的指针，即：
+
+typedef struct tree{
+  char value;
+  struct tree *lchild;
+  struct tree *rchild;
+} tree;
+
+
+
+也有在上述结构中加一个父指针指向它的父结点，对于根结点，其父指针指向NULL。那么对于一棵没有设定父指...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 沉默者说 on April 8, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/04/06/test1_bishi/">
         <h2 class="post-title">
             笔试题之寻求满二叉树的最近公共祖先
@@ -477,7 +509,7 @@ let "x ...
                             
                         
                             
-                                <a href="/tags/#编程" title="编程" rel="4">
+                                <a href="/tags/#编程" title="编程" rel="5">
                                     编程
                                 </a>
                             
