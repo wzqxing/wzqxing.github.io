@@ -5,8 +5,8 @@
     <description>喃喃自语，唯有沉默</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 09 Apr 2017 01:06:13 +0800</pubDate>
-    <lastBuildDate>Sun, 09 Apr 2017 01:06:13 +0800</lastBuildDate>
+    <pubDate>Sun, 09 Apr 2017 18:54:23 +0800</pubDate>
+    <lastBuildDate>Sun, 09 Apr 2017 18:54:23 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -190,7 +190,39 @@ tree * parent(tree *root,tree *p){
 
 &lt;p&gt;可惜，由于笔试时间太短，当时没做出来。&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://wzqxing.github.io/program/1.c&quot;&gt;源文件&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;section-2&quot;&gt;改进&lt;/h2&gt;
+
+&lt;p&gt;上述解法不具有一般性，因为利用了所给的规律，如果满二叉搜索树内存储的不是从1到2^k-1内的正整数，那么上述构建满二叉搜索树的方法是错误的。下面给出更加一般的解法，对于任意一个有序数组（无序数组快排后），都可以构建满二叉搜索树，利用的是二叉搜索树中序遍历是升序的这一特性。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void create_tree(full_search_tree *t,int *date,int n){
+  if ( t==NULL || date==NULL || n&amp;gt;SIZE-1) return;
+  stack *s = (stack *)malloc(sizeof(stack));
+  initStack(s);
+  int p,i=0;
+  p=1;
+  t-&amp;gt;length = n;
+  while ( p&amp;lt;=t-&amp;gt;length || s-&amp;gt;top!=-1){
+    if ( p&amp;lt;=t-&amp;gt;length ){
+      push(s,p);
+      p = left(p);
+    }
+    else{
+      p = pop(s);
+      t-&amp;gt;value[p] = date[i];
+      i++;
+      p = right(p);
+    }
+  }
+  for (i=1;i&amp;lt;=t-&amp;gt;length;i++)
+    printf(&quot;%d &quot;,t-&amp;gt;value[i]);
+  printf(&quot;\n&quot;);
+  return;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://wzqxing.github.io/program/1.c&quot;&gt;源文件&lt;/a&gt;
+&lt;a href=&quot;https://wzqxing.github.io/program/3.c&quot;&gt;源文件２&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Thu, 06 Apr 2017 00:00:00 +0800</pubDate>
         <link>/2017/04/06/test1_bishi/</link>

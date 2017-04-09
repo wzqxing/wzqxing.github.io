@@ -97,4 +97,36 @@ int solution(int *T, int n, int a, int b, int c)
 
 可惜，由于笔试时间太短，当时没做出来。
 
+## 改进
+
+上述解法不具有一般性，因为利用了所给的规律，如果满二叉搜索树内存储的不是从1到2^k-1内的正整数，那么上述构建满二叉搜索树的方法是错误的。下面给出更加一般的解法，对于任意一个有序数组（无序数组快排后），都可以构建满二叉搜索树，利用的是二叉搜索树中序遍历是升序的这一特性。
+
+```
+void create_tree(full_search_tree *t,int *date,int n){
+  if ( t==NULL || date==NULL || n>SIZE-1) return;
+  stack *s = (stack *)malloc(sizeof(stack));
+  initStack(s);
+  int p,i=0;
+  p=1;
+  t->length = n;
+  while ( p<=t->length || s->top!=-1){
+    if ( p<=t->length ){
+      push(s,p);
+      p = left(p);
+    }
+    else{
+      p = pop(s);
+      t->value[p] = date[i];
+      i++;
+      p = right(p);
+    }
+  }
+  for (i=1;i<=t->length;i++)
+    printf("%d ",t->value[i]);
+  printf("\n");
+  return;
+}
+```
+
 [源文件](https://wzqxing.github.io/program/1.c)
+[源文件２](https://wzqxing.github.io/program/3.c)

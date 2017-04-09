@@ -251,7 +251,39 @@
 
 <p>可惜，由于笔试时间太短，当时没做出来。</p>
 
-<p><a href="https://wzqxing.github.io/program/1.c">源文件</a></p>
+<h2 id="section-2">改进</h2>
+
+<p>上述解法不具有一般性，因为利用了所给的规律，如果满二叉搜索树内存储的不是从1到2^k-1内的正整数，那么上述构建满二叉搜索树的方法是错误的。下面给出更加一般的解法，对于任意一个有序数组（无序数组快排后），都可以构建满二叉搜索树，利用的是二叉搜索树中序遍历是升序的这一特性。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>void create_tree(full_search_tree *t,int *date,int n){
+  if ( t==NULL || date==NULL || n&gt;SIZE-1) return;
+  stack *s = (stack *)malloc(sizeof(stack));
+  initStack(s);
+  int p,i=0;
+  p=1;
+  t-&gt;length = n;
+  while ( p&lt;=t-&gt;length || s-&gt;top!=-1){
+    if ( p&lt;=t-&gt;length ){
+      push(s,p);
+      p = left(p);
+    }
+    else{
+      p = pop(s);
+      t-&gt;value[p] = date[i];
+      i++;
+      p = right(p);
+    }
+  }
+  for (i=1;i&lt;=t-&gt;length;i++)
+    printf("%d ",t-&gt;value[i]);
+  printf("\n");
+  return;
+}
+</code></pre>
+</div>
+
+<p><a href="https://wzqxing.github.io/program/1.c">源文件</a>
+<a href="https://wzqxing.github.io/program/3.c">源文件２</a></p>
 
 
                 <hr>
