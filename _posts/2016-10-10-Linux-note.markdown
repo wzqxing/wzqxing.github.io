@@ -6,7 +6,6 @@ data:       2016-10-11
 authori:    "silence"
 header-img: "img/post-ubuntu-logo-water-1920x1080.png"
 tags:
-    - os
     - Linux
     - 笔记
 

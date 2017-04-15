@@ -5,8 +5,8 @@
     <description>喃喃自语，唯有沉默</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 15 Apr 2017 16:52:44 +0800</pubDate>
-    <lastBuildDate>Sat, 15 Apr 2017 16:52:44 +0800</lastBuildDate>
+    <pubDate>Sat, 15 Apr 2017 16:56:32 +0800</pubDate>
+    <lastBuildDate>Sat, 15 Apr 2017 16:56:32 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -106,6 +106,8 @@
         
         <category>编程</category>
         
+        <category>算法</category>
+        
         
       </item>
     
@@ -198,7 +200,7 @@ tree * parent(tree *root,tree *p){
         <link>/2017/04/08/seek_parent/</link>
         <guid isPermaLink="true">/2017/04/08/seek_parent/</guid>
         
-        <category>编程</category>
+        <category>代码</category>
         
         
       </item>
@@ -328,7 +330,7 @@ tree * parent(tree *root,tree *p){
         <link>/2017/04/06/test1_bishi/</link>
         <guid isPermaLink="true">/2017/04/06/test1_bishi/</guid>
         
-        <category>编程</category>
+        <category>代码</category>
         
         
       </item>
@@ -608,7 +610,7 @@ void print_in(search_tree * T){
         
         <category>算法</category>
         
-        <category>编程</category>
+        <category>代码</category>
         
         
       </item>
@@ -700,7 +702,7 @@ void print_in(search_tree * T){
         
         <category>算法</category>
         
-        <category>数据结构</category>
+        <category>代码</category>
         
         
       </item>
@@ -1273,7 +1275,7 @@ char* strDup(char *str){
         
         <category>算法</category>
         
-        <category>编程</category>
+        <category>代码</category>
         
         
       </item>
@@ -1473,9 +1475,9 @@ int right(int index)
         <link>/2016/11/27/heap_sort/</link>
         <guid isPermaLink="true">/2016/11/27/heap_sort/</guid>
         
-        <category>算法</category>
+        <category>代码</category>
         
-        <category>排序</category>
+        <category>算法</category>
         
         
       </item>
@@ -2084,10 +2086,6 @@ done
         
         <category>笔记</category>
         
-        <category>编程</category>
-        
-        <category>Linux</category>
-        
         
       </item>
     
@@ -2329,8 +2327,6 @@ done
         <guid isPermaLink="true">/2016/10/13/Permutation-combination/</guid>
         
         <category>笔记</category>
-        
-        <category>零碎</category>
         
         
       </item>
@@ -2945,8 +2941,6 @@ command1 &amp;amp;&amp;amp; command2
         <pubDate>Mon, 10 Oct 2016 00:00:00 +0800</pubDate>
         <link>/2016/10/10/Linux-note/</link>
         <guid isPermaLink="true">/2016/10/10/Linux-note/</guid>
-        
-        <category>os</category>
         
         <category>Linux</category>
         

@@ -7,7 +7,6 @@ authori:    "silence"
 header-img: "img/post-binary.jpg"
 tags:
     - 笔记
-    - 零碎
 
 
 

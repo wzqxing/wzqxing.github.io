@@ -7,8 +7,6 @@ authori:    "silence"
 header-img: ""
 tags:
         - 笔记
-        - 编程
-        - Linux
 
 
 
