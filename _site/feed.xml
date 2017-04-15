@@ -5,9 +5,107 @@
     <description>喃喃自语，唯有沉默</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 10 Apr 2017 00:40:38 +0800</pubDate>
-    <lastBuildDate>Mon, 10 Apr 2017 00:40:38 +0800</lastBuildDate>
+    <pubDate>Sat, 15 Apr 2017 16:43:49 +0800</pubDate>
+    <lastBuildDate>Sat, 15 Apr 2017 16:43:49 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>打印所有卡特兰排列</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;卡特兰数&lt;/h2&gt;
+
+&lt;p&gt;n对括号，有多少种可能排列？&lt;/p&gt;
+
+&lt;p&gt;答：C(2*n,n)/(n+1)&lt;/p&gt;
+
+&lt;p&gt;这是一个卡特兰排列问题，完整描述自行google，如何打印出所有可能呢？&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;递归算法&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void printPar(int left, int right, char * str,int count){
+  //初始时，左边等于右边
+  if ( left&amp;lt;0 || right&amp;lt;left) {
+    return;
+  }
+
+  if ( left==0 &amp;amp;&amp;amp; right==0 ){
+    printf(&quot;%s\n&quot;,str);
+  }
+  else{
+    //如果１还有剩余
+    if ( left&amp;gt;0 ){
+      str[count] = '1';
+      printPar(left-1,right,str,count+1);
+    }
+    //如果0的个数大于1的个数
+    if ( right&amp;gt;left ){
+      str[count] = '0';
+      printPar(left,right-1,str,count+1);
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;当&lt;code class=&quot;highlighter-rouge&quot;&gt;n=3&lt;/code&gt;时，输出：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;111000
+110100
+110010
+101100
+101010
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;非递归算法&lt;/h2&gt;
+
+&lt;p&gt;上面的非递归算法很难理解，于是我就构造出非递归算法。
+举例说明：已知n=3时所有排列，输出n=4时所有排列
+步骤：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;取第一个111000，找到最后一个10，即111(此位置)000&lt;/li&gt;
+  &lt;li&gt;插入10，并且将位置往后移一步，得到111(此位置)000,1110(此位置)00,11100(此位置)0,111000(此位置)，即11110000,11101000,11100100,11100010&lt;/li&gt;
+  &lt;li&gt;取下一个110100，重复上述步骤&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;此算法原创，转载请著名出处&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;按照以上步骤就可以找出所有卡特兰排列。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void solution(char **p,char **result,long m, long n){//有m个序列，每个序列2n个字符
+  int i,j,k;
+  long next = catalan(n+1);
+  long count=0;//目标数组行数
+  long place;//插入位置
+  for ( i=0 ; i&amp;lt;m ; i++ ){
+    for ( j=2*n-1 ; j&amp;gt;=1; j-- ){
+      if ( p[i][j]==')' &amp;amp;&amp;amp; p[i][j-1]=='('){//找到最后一个括号序列或者１０序列
+        place = j;
+        for ( ; place&amp;lt;=2*n;place++){
+          memcpy(result[count],p[i],place);
+          result[count][place] = '(';
+          result[count][place+1] = ')';
+          memcpy(result[count]+place+2,p[i]+place,2*n-place);
+          count++;
+        }
+        break;
+      }
+    }
+  }
+  if ( count==next) printf(&quot;success!!!\n&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://wzqxing.github.io/program/4.c&quot;&gt;递归代码&lt;/a&gt;
+&lt;a href=&quot;https://wzqxing.github.io/program/5.c&quot;&gt;非递归代码&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 15 Apr 2017 00:00:00 +0800</pubDate>
+        <link>/2017/04/15/katelan/</link>
+        <guid isPermaLink="true">/2017/04/15/katelan/</guid>
+        
+        
+      </item>
     
       <item>
         <title>寻找无父指针二叉树的父结点算法</title>
