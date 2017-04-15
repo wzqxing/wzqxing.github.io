@@ -1,0 +1,188 @@
+<h2 id="heap">堆(heap)</h2>
+
+<p>堆是一个近似完全二叉树，除了最底层，该数都是满的。最大堆中 <strong>父结点</strong> 的值 <em>大于等于</em> <strong>子结点</strong> 。
+堆的数据结构是一个数组 <em>heap.date</em> ，数组的元素数 <em>heap.date_length</em> ，堆的有效元素 <em>heap.size</em> 。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>typedef int HeatEleType;
+
+typedef struct
+{
+  HeatEleType *date;
+  int size;
+  int date_length;
+} heap;
+</code></pre>
+</div>
+
+<p>若设最大堆的根结点的索引为1，则：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>int parent(int index)
+{
+  return index/2;
+}
+
+int left(int index)
+{
+  return index*2;
+}
+
+int right(int index)
+{
+  return index*2+1;
+}
+</code></pre>
+</div>
+
+<p>若最大堆的根结点的索引为0，则：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>int parent(int index)
+{
+  return int(index/2-0.5);
+}
+
+int left(int index)
+{
+  return index*2+1;
+}
+
+int right(int index)
+{
+  return index*2+2;
+}
+</code></pre>
+</div>
+
+<p>为了方便起见，以下讨论均以根结点索引为1为基础。</p>
+
+<p>堆的基本过程：</p>
+<ul>
+  <li><em>max_heapify</em> ：维护最大堆的性质</li>
+  <li><em>build_max_heap</em>：建造最大堆</li>
+  <li><em>heap_sort</em>：堆排序</li>
+</ul>
+
+<h2 id="maxheapify"><em>max_heapify</em></h2>
+
+<p><em>max_heapify</em> 是用来维护堆的性质的重要过程。它的输入为堆和索引 <em>index</em> ，<em>max_heapify</em> 通过让 <em>heap.date[index]</em> 的值在最大堆中“逐级下降”，从而使得以索引 <em>index</em> 为根结点的子树重新遵循最大堆的性质。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>void max_heapify(heap &amp;H,int index)
+{
+  int l,r,largest;
+  int temp;
+
+  l = left(index)
+  r = right(index)
+
+  if ( l &lt;= H.size    &amp;&amp;    H.date[l] &gt; H.date[index] )
+    largest = l;
+  else
+    largest = index;
+
+  if ( r &lt;= H.size    &amp;&amp;    H.date[r] &gt; H.date[largest] )
+      largest = r;
+
+  if ( largest != index )
+  {
+    temp = date[largest];
+    date[largest] = date[index];
+    date[index] = temp;
+    max_heapify( H,largest );
+  }
+
+}
+</code></pre>
+</div>
+
+<p>以上是通过递归来实现，非递归代码如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>void max_heapify( heap &amp;H, int index)
+{
+  int l,r,largest,i,temp;
+  i = index;
+
+  while ( 1 )
+  {
+    l = left(i);
+    r = right(i);
+
+    if ( l &lt;= H.size    &amp;&amp;    H.date[l] &gt; H.date[i] )
+      largest = l;
+    else
+      largest = i;
+
+    if ( r &lt;= H.size    &amp;&amp;    H.date[r] &gt; H.date[largest] )
+        largest = r;
+
+    if ( largest &gt; i )
+    {
+      temp = H.date[largest];
+      H.date[largest] = H.date[i];
+      H.date[i] = temp;
+
+      i = largest;
+    }
+    else
+      break;
+  }
+}
+</code></pre>
+</div>
+
+<h2 id="initheap"><em>initHeap</em></h2>
+
+<p>通过自底向上的方法利用　<em>max_heapify</em>　把一个数组转换为一个最大堆。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>void initHeap( heap &amp;H,HeatEleType *list,int n)
+{
+  H.date = new HeatEleType[n+1];
+  if(!H.date)
+  {
+    cerr&lt;&lt;"堆存储分配失败";
+    exit(1);
+  }
+  H.size = n;
+  int i;
+
+
+  for(i=0; i&lt;n; i++)
+    H.date[i+1] = list[i];
+
+//自底向上建立堆，叶节点无须此过程
+  for(i=n/2; i&gt;=1; i--)
+    max_heapify(H,i);
+
+}
+</code></pre>
+</div>
+
+<blockquote>
+  <p>为什么循环变量是从n/2到１递减，而不是从１到n/2递增？</p>
+
+  <p>因为初始时列表并不是一个堆，不能使用<em>max_heapify</em>，所以必须是自底向上建堆</p>
+</blockquote>
+
+<h2 id="heapsort">堆排序(heap_sort)</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>void heap_sort( heap &amp;H, HeatEleType *date, int n)
+{
+  initHeap(H,date,n);
+  int i;
+  int temp;
+  for( i=H.size; i&gt;=2; i--)
+  {
+    temp = H.date[i];
+    H.date[i] = H.date[1];
+    H.date[1] = temp;
+    H.size -= 1;
+    max_heapify(H,1);
+  }
+
+  for(i=0; i&lt;n;i++)
+    date[i] = H.date[i+1];
+}
+</code></pre>
+</div>
+
+<blockquote>
+  <p>参考算法导论第六章</p>
+</blockquote>

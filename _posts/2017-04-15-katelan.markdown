@@ -6,7 +6,7 @@ data:       2017-04-15
 authori:    "silence"
 header-img: ""
 tags:
-      - 编程
+      - 代码
       - 算法
 
 

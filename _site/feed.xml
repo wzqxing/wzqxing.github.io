@@ -5,8 +5,8 @@
     <description>喃喃自语，唯有沉默</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 15 Apr 2017 16:56:32 +0800</pubDate>
-    <lastBuildDate>Sat, 15 Apr 2017 16:56:32 +0800</lastBuildDate>
+    <pubDate>Sat, 15 Apr 2017 17:00:18 +0800</pubDate>
+    <lastBuildDate>Sat, 15 Apr 2017 17:00:18 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -104,7 +104,7 @@
         <link>/2017/04/15/katelan/</link>
         <guid isPermaLink="true">/2017/04/15/katelan/</guid>
         
-        <category>编程</category>
+        <category>代码</category>
         
         <category>算法</category>
         
