@@ -2,7 +2,7 @@
 layout:     post
 title:      "打印所有卡特兰排列"
 subtitle:   "不是数列，是所有排列"
-data:       2016-10-xx
+data:       2017-04-15
 authori:    "silence"
 header-img: ""
 tags:
