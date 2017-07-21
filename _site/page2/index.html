@@ -10,9 +10,9 @@
     <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>笔试题之寻求满二叉树的最近公共祖先 - silence |  Blog</title>
+    <title>silence |  Blog</title>
 
-    <link rel="canonical" href="/2017/04/06/test1_bishi/">
+    <link rel="canonical" href="/page2/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -123,281 +123,161 @@
 </script>
 
 
-    <!-- Image to hack wechat -->
-<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="/" width="0" height="0"> -->
-
-<!-- Post Header -->
-<style type="text/css">
-    header.intro-header{
-        background-image: url('/')
-    }
-</style>
-<header class="intro-header" >
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg-1.jpg')">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        
-                        <a class="tag" href="/tags/#代码" title="代码">代码</a>
-                        
-                    </div>
-                    <h1>笔试题之寻求满二叉树的最近公共祖先</h1>
-                    
-                    
-                    <h2 class="subheading">原理和代码</h2>
-                    
-                    <span class="meta">Posted by 沉默者说 on April 6, 2017</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>沉默者说</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">做最真实的自己，绝不违背自身原则</span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Post Content -->
-<article>
-    <div class="container">
-        <div class="row">
+<!-- Main Content -->
+<div class="container">
+	<div class="row">
+        
 
+<!-- USE SIDEBAR -->
     <!-- Post Container -->
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                post-container">
+    		<div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+    			
+<div class="post-preview">
+    <a href="/2016/10/10/Linux-note/">
+        <h2 class="post-title">
+            Linux学习笔记
+        </h2>
+        
+        <h3 class="post-subtitle">
+            记忆低能儿，杂乱无章的笔记
+        </h3>
+        
+        <div class="post-content-preview">
+            Catagory
 
-				<h2 id="section">题目</h2>
 
-<p>一棵满二叉搜索树，有k层，有2^k-1个结点，存储着1到2^k-1之间的正整数，任意给１到2^k-1之间的三个数，求着三个数的最近公共祖先的值。</p>
+  目录结构
+  bash快捷键
+  常用命令
+  字符
+  查找和筛选
 
-<ul>
-  <li>输入k和三个数，输出一个数</li>
-  <li>输入 4 5 9 10
-输出 8</li>
-  <li>输入 4 9 15 14
-输出 12</li>
+
+目录结构
+
+
+  Linux目录的主要功能
+
+
+
+  /bin 普通用户可使用的指令
+  /boot 启动文件
+  /dev 设备文件
+  /etc 系统和服务设置文件（若要修改，先备份）
+  /home 用户目录
+  /lib 系统几相关软件依赖的库文件
+  /lost+found 若系统意...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 沉默者说 on October 10, 2016
+    </p>
+</div>
+<hr>
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+    <li class="previous">
+        <a href="/">&larr; Newer Posts</a>
+    </li>
+    
+    
 </ul>
 
-<h2 id="section-1">分析</h2>
 
-<p>这道题首先要构造一棵满二叉树，满二叉树是用数组构造的。二叉搜索树的构造有点麻烦，分析一下：</p>
-
-<p>当k=1时，二叉树数组的值为 1 1(数组的第0个元素保存k)</p>
-
-<p>当k=2时，二叉树数组的值为 2 2 1 3</p>
-
-<p>当k=3时，二叉树数组的值为 3 4 2 6 1 3 5 7</p>
-
-<p>当k=4时，二叉树数组的值为 4 8 4 12 2 6 10 14 1 3 5 7 9 11 13 15</p>
-
-<p>观察以上的规律，可以发现，<strong><em>奇数都在数组的后半部分而且是升序排列，并且数组的前半部分是上一阶的两倍</em></strong></p>
-
-<p>即k=4时，数组的前半部分偶数的排列是k=3时整个数组相应位置值的两倍</p>
-
-<p>通过以上规律可以构造出二叉树数组</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>int * create_tree(int k)
-{
-  int n = pow(2,k);
-  int *result = (int *)malloc(sizeof(int)*n);
-  result[0] = k;
-  result[1] = 1;
-  int i,j,temp;//i是控制递增的元素，j是控制每个值，temp记录奇数值
-  for ( i=1; i&lt;k; i++){
-    for ( j=1; j&lt;pow(2,i); j++)
-      result[j] = 2*result[j];
-    temp = 1;
-    for ( ; j&lt;pow(2,i+1); j++){
-      result[j] = temp;
-      temp += 2;
-    }
-  }
-  return result;
-}
-</code></pre>
-</div>
-
-<p>在二叉搜索树中寻求两个结点的最近公共祖先，这个最近公共祖先有这样的性质，如果这个值在两个结点值之间，则说明这是最近公共祖先，如果小于这两个结点的值，就说明最近公共祖先在它的右子树，否则在它的左子树。非递归代码如下</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>int find( int *T,int n,int a,int b){
-  if ( a&gt;b){
-    int temp = a;
-    a = b;
-    b = temp;
-  }
-  int p = 1;
-  while ( !(a&lt;=T[p] &amp;&amp; T[p]&lt;=b) ){
-    if ( a&gt;T[p])
-      p = right(p);
-    else
-      p = left(p);
-  }
-  return p;
-}
-</code></pre>
-</div>
-
-<p>所以这题的解决代码如下:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>int solution(int *T, int n, int a, int b, int c)
-{
-  int p1,p2,p3;
-  p1 = find(T,n,a,b);
-  p2 = find(T,n,a,c);
-  return find(T,n,T[p1],T[p2]);
-}
-</code></pre>
-</div>
-
-<p>可惜，由于笔试时间太短，当时没做出来。</p>
-
-<h2 id="section-2">改进</h2>
-
-<p>上述解法不具有一般性，因为利用了所给的规律，如果满二叉搜索树内存储的不是从1到2^k-1内的正整数，那么上述构建满二叉搜索树的方法是错误的。下面给出更加一般的解法，对于任意一个有序数组（无序数组快排后），都可以构建满二叉搜索树，利用的是二叉搜索树中序遍历是升序的这一特性。</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>void create_tree(full_search_tree *t,int *date,int n){
-  if ( t==NULL || date==NULL || n&gt;SIZE-1) return;
-  stack *s = (stack *)malloc(sizeof(stack));
-  initStack(s);
-  int p,i=0;
-  p=1;
-  t-&gt;length = n;
-  while ( p&lt;=t-&gt;length || s-&gt;top!=-1){
-    if ( p&lt;=t-&gt;length ){
-      push(s,p);
-      p = left(p);
-    }
-    else{
-      p = pop(s);
-      t-&gt;value[p] = date[i];
-      i++;
-      p = right(p);
-    }
-  }
-  for (i=1;i&lt;=t-&gt;length;i++)
-    printf("%d ",t-&gt;value[i]);
-  printf("\n");
-  return;
-}
-</code></pre>
-</div>
-
-<p><a href="https://wzqxing.github.io/program/1.c">源文件</a>
-<a href="https://wzqxing.github.io/program/3.c">源文件２</a></p>
-
-
-                <hr>
-
-                
-
-
-                <ul class="pager">
-                    
-                    <li class="previous">
-                        <a href="/2017/03/27/search-tree/" data-toggle="tooltip" data-placement="top" title="实现二叉搜索树">&larr; Previous Post</a>
-                    </li>
-                    
-                    
-                    <li class="next">
-                        <a href="/2017/04/08/seek_parent/" data-toggle="tooltip" data-placement="top" title="寻找无父指针二叉树的父结点算法">Next Post &rarr;</a>
-                    </li>
-                    
-                </ul>
-
-
-                
-
-                
-
-            </div>
-
+    		</div>
     <!-- Sidebar Container -->
             <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
                 <!-- Featured Tags -->
                 
                 <section>
                     <hr class="hidden-sm hidden-xs">
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
-        				
+                        
                             
-        				
+                        
                             
-                				<a href="/tags/#笔记" title="笔记" rel="3">
+                                <a href="/tags/#笔记" title="笔记" rel="3">
                                     笔记
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#代码" title="代码" rel="7">
+                                <a href="/tags/#代码" title="代码" rel="7">
                                     代码
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#算法" title="算法" rel="5">
+                                <a href="/tags/#算法" title="算法" rel="5">
                                     算法
                                 </a>
                             
-        				
+                        
                             
-        				
-        			</div>
+                        
+                    </div>
                 </section>
                 
 
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+                        
+                            <img src="/img/myself.jpg" />
+                        
+                        
+                            <p>沉默者说</p>
+                        
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            
+                            
+                            
+                            
+                        </ul>
+                    </div>
+                </section>
                 <!-- Friends Blog -->
                 
-            </div>
-        </div>
-    </div>
-</article>
-
-
-
-
-
-
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
-<script>
-    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
-        anchors.options = {
-          visible: 'always',
-          placement: 'right',
-          icon: '#'
-        };
-        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
-    })
-</script>
-<style>
-    /* place left on bigger screen */
-    @media all and (min-width: 800px) {
-        .anchorjs-link{
-            position: absolute;
-            left: -0.75em;
-            font-size: 1.1em;
-            margin-top : -0.1em;
-        }
-    }
-</style>
-
+    		</div>
+        
+	</div>
+</div>
 
 
     <!-- Footer -->

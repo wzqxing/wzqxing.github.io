@@ -10,9 +10,9 @@
     <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>笔试题之寻求满二叉树的最近公共祖先 - silence |  Blog</title>
+    <title>程序思想：封装与接口 - silence |  Blog</title>
 
-    <link rel="canonical" href="/2017/04/06/test1_bishi/">
+    <link rel="canonical" href="/2017/07/21/encapsulation_and_interface/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -125,12 +125,12 @@
 
     <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="/" width="0" height="0"> -->
+<!-- <img src="/img/encapsulation-interface-head.png" width="0" height="0"> -->
 
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('/')
+        background-image: url('/img/encapsulation-interface-head.png')
     }
 </style>
 <header class="intro-header" >
@@ -140,15 +140,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#代码" title="代码">代码</a>
+                        <a class="tag" href="/tags/#程序思想" title="程序思想">程序思想</a>
                         
                     </div>
-                    <h1>笔试题之寻求满二叉树的最近公共祖先</h1>
+                    <h1>程序思想：封装与接口</h1>
                     
                     
-                    <h2 class="subheading">原理和代码</h2>
+                    <h2 class="subheading">计算机系统设计基石</h2>
                     
-                    <span class="meta">Posted by 沉默者说 on April 6, 2017</span>
+                    <span class="meta">Posted by 沉默者说 on July 21, 2017</span>
                 </div>
             </div>
         </div>
@@ -166,124 +166,67 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h2 id="section">题目</h2>
+				<h2 id="section">引言</h2>
 
-<p>一棵满二叉搜索树，有k层，有2^k-1个结点，存储着1到2^k-1之间的正整数，任意给１到2^k-1之间的三个数，求着三个数的最近公共祖先的值。</p>
+<p>现代计算机系统结构如此复杂，内部存储和各种数觉结构繁多，为了保证结构的清晰和可拓展性，其中大量运用了封装与接口的思想。封装和接口两者是相互依存的，某对象（通常为底层）封装自己并为另一对象（通常为高层）提供接口，高层并不需要明白底层具体实现细节，只需知道底层提供给它的接口以及能实现的功能，除了接口，底层和高层是相对独立的，两者的联系就是通过接口。</p>
+
+<p>事实上，封装与接口思想在生活中无处不在。封装可以理解为某一产品的实现原理和材料，而接口就是此产品的使用方法。从这角度看，封装抵抗外界干扰的能力和接口的清晰简洁是评价产品的重要标准。</p>
+
+<p>对封装和接口运用较好的是面向对象程序设计。</p>
+
+<h2 id="section-1">利</h2>
+
+<p>封装接口到底能给我们带来什么呢？</p>
 
 <ul>
-  <li>输入k和三个数，输出一个数</li>
-  <li>输入 4 5 9 10
-输出 8</li>
-  <li>输入 4 9 15 14
-输出 12</li>
+  <li>
+    <p>可复用可移植</p>
+
+    <p>底层的功能可能很多高层需要使用，此时将底层封装起来向上层提供接口</p>
+  </li>
+  <li>
+    <p>结构清晰，易修改</p>
+
+    <p>目前软件代码量越来越大，其内部结构越来越复杂，后期维护管理工作越来越困难，究其原因就是没有好好利用封装和接口概念。Linux代码量巨大，为何它能在全世界众多程序员的共同努力下发展得越来越好，就是因为其内部结构清晰，代码结构紧凑，尽管它是由Ｃ语言开发，但是面向对象的思想和封装接口在代码中处处都有体现，一个经典的例子是Linux虚拟文件系统。</p>
+  </li>
+  <li>
+    <p>合理分工合作</p>
+
+    <p>在现代，个人完成一个成熟的产品越来越困难，分工和合作已经是一种必然的工作形态。那依据什么来分类呢？我认为因该按照层次分类，项目之初根据需要完成的要求作出接口文档，确立各个层次之间的接口，写好测试用例。然后将接口文档和具体需要的代码分配给个人，由个人实现内部细节。</p>
+  </li>
 </ul>
 
-<h2 id="section-1">分析</h2>
+<h2 id="section-2">弊</h2>
 
-<p>这道题首先要构造一棵满二叉树，满二叉树是用数组构造的。二叉搜索树的构造有点麻烦，分析一下：</p>
+<p>尽管封装与接口使得代码的可读性更好，内部结构更容易理解，后期的维护管理更加方便，但是其本身也是含有缺陷的，这缺陷不是小问题，它降低了整个系统的性能。</p>
 
-<p>当k=1时，二叉树数组的值为 1 1(数组的第0个元素保存k)</p>
+<p>为何封装和接口会降低系统性能呢？因为高层和底层只是通过所定义的接口通信，两者内部的数据结构并不共享，倘若高层需要用到底层的某一数据结构，但是接口中并未将此数据结构定义，高层只能重新构建此数据结构。</p>
 
-<p>当k=2时，二叉树数组的值为 2 2 1 3</p>
+<p>说明这种情况的一个典型的例子是递归，看以下代码：</p>
 
-<p>当k=3时，二叉树数组的值为 3 4 2 6 1 3 5 7</p>
-
-<p>当k=4时，二叉树数组的值为 4 8 4 12 2 6 10 14 1 3 5 7 9 11 13 15</p>
-
-<p>观察以上的规律，可以发现，<strong><em>奇数都在数组的后半部分而且是升序排列，并且数组的前半部分是上一阶的两倍</em></strong></p>
-
-<p>即k=4时，数组的前半部分偶数的排列是k=3时整个数组相应位置值的两倍</p>
-
-<p>通过以上规律可以构造出二叉树数组</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>int * create_tree(int k)
-{
-  int n = pow(2,k);
-  int *result = (int *)malloc(sizeof(int)*n);
-  result[0] = k;
-  result[1] = 1;
-  int i,j,temp;//i是控制递增的元素，j是控制每个值，temp记录奇数值
-  for ( i=1; i&lt;k; i++){
-    for ( j=1; j&lt;pow(2,i); j++)
-      result[j] = 2*result[j];
-    temp = 1;
-    for ( ; j&lt;pow(2,i+1); j++){
-      result[j] = temp;
-      temp += 2;
-    }
-  }
-  return result;
+<div class="highlighter-rouge"><pre class="highlight"><code>int fib(int n){
+	if(n==1 || n==2)
+		return 1;
+	else return fib(n-2) + fib(n-1);
 }
 </code></pre>
 </div>
 
-<p>在二叉搜索树中寻求两个结点的最近公共祖先，这个最近公共祖先有这样的性质，如果这个值在两个结点值之间，则说明这是最近公共祖先，如果小于这两个结点的值，就说明最近公共祖先在它的右子树，否则在它的左子树。非递归代码如下</p>
+<p>这是一个求裴波那契数列第n项的一个递归算法。代码很简单，很明显，它用到了封装和接口概念，接口就是n。然而它的效率很低，因为它重复求值了，假设需要求 <code class="highlighter-rouge">fib(9)</code> ,在内部其分解为 <code class="highlighter-rouge">fib(8) + fib(7)</code> ，求 <code class="highlighter-rouge">fib(8)</code> 的时候会求 <code class="highlighter-rouge">fib(7)</code> ，但求完 <code class="highlighter-rouge">fib(8)</code> 后它依旧递归求解 <code class="highlighter-rouge">fib(7)</code> ，所以说它效率很低下，远远比不过迭代算法。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>int find( int *T,int n,int a,int b){
-  if ( a&gt;b){
-    int temp = a;
-    a = b;
-    b = temp;
-  }
-  int p = 1;
-  while ( !(a&lt;=T[p] &amp;&amp; T[p]&lt;=b) ){
-    if ( a&gt;T[p])
-      p = right(p);
-    else
-      p = left(p);
-  }
-  return p;
-}
-</code></pre>
-</div>
+<p>事实上，递归都是一种封装和接口思想，每次递归新的一层时，它会把上一次的中间变量和其他结果封存在栈中，压入新的变量和数据结构，这使得递归版本的算法在性能上比不上非递归算法，一般也很简洁，很易读。递归算法也很容易转化为非递归算法。</p>
 
-<p>所以这题的解决代码如下:</p>
+<h2 id="section-3">解决办法</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>int solution(int *T, int n, int a, int b, int c)
-{
-  int p1,p2,p3;
-  p1 = find(T,n,a,b);
-  p2 = find(T,n,a,c);
-  return find(T,n,T[p1],T[p2]);
-}
-</code></pre>
-</div>
+<p>封装和接口有利有弊，那么应该如何取舍呢？</p>
 
-<p>可惜，由于笔试时间太短，当时没做出来。</p>
+<p>事实上我们无须取舍，因为 <strong>局部性原理</strong> ：百分之九十的时间CPU在运行百分之十的代码。所以说主要影响程序性能的代码只是其中的百分之十，姑且将这百分之十的代码称为 <em>核心代码</em> 。在核心代码地带，我们要精雕细琢，不放过一丝提升程序性能的机会，尽最大的努力去优化程序，然后把其中的核心思想记录下来供以后管理维护的需要。在非核心代码区域，我们要规划好封装和接口，使得其代码的可读性最大。</p>
 
-<h2 id="section-2">改进</h2>
+<p>一般来讲，最底层的代码有更多的机会去执行，而更高层的代码是整个程序的主体框架，所以说我们无须取舍。</p>
 
-<p>上述解法不具有一般性，因为利用了所给的规律，如果满二叉搜索树内存储的不是从1到2^k-1内的正整数，那么上述构建满二叉搜索树的方法是错误的。下面给出更加一般的解法，对于任意一个有序数组（无序数组快排后），都可以构建满二叉搜索树，利用的是二叉搜索树中序遍历是升序的这一特性。</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>void create_tree(full_search_tree *t,int *date,int n){
-  if ( t==NULL || date==NULL || n&gt;SIZE-1) return;
-  stack *s = (stack *)malloc(sizeof(stack));
-  initStack(s);
-  int p,i=0;
-  p=1;
-  t-&gt;length = n;
-  while ( p&lt;=t-&gt;length || s-&gt;top!=-1){
-    if ( p&lt;=t-&gt;length ){
-      push(s,p);
-      p = left(p);
-    }
-    else{
-      p = pop(s);
-      t-&gt;value[p] = date[i];
-      i++;
-      p = right(p);
-    }
-  }
-  for (i=1;i&lt;=t-&gt;length;i++)
-    printf("%d ",t-&gt;value[i]);
-  printf("\n");
-  return;
-}
-</code></pre>
-</div>
-
-<p><a href="https://wzqxing.github.io/program/1.c">源文件</a>
-<a href="https://wzqxing.github.io/program/3.c">源文件２</a></p>
+<blockquote>
+  <p>原创博文，转载请著名出处</p>
+</blockquote>
 
 
                 <hr>
@@ -294,13 +237,9 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/03/27/search-tree/" data-toggle="tooltip" data-placement="top" title="实现二叉搜索树">&larr; Previous Post</a>
+                        <a href="/2017/04/15/katelan/" data-toggle="tooltip" data-placement="top" title="打印所有卡特兰排列">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2017/04/08/seek_parent/" data-toggle="tooltip" data-placement="top" title="寻找无父指针二叉树的父结点算法">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 

@@ -5,9 +5,82 @@
     <description>喃喃自语，唯有沉默</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 15 Apr 2017 17:00:18 +0800</pubDate>
-    <lastBuildDate>Sat, 15 Apr 2017 17:00:18 +0800</lastBuildDate>
+    <pubDate>Fri, 21 Jul 2017 13:37:13 +0800</pubDate>
+    <lastBuildDate>Fri, 21 Jul 2017 13:37:13 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>程序思想：封装与接口</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;引言&lt;/h2&gt;
+
+&lt;p&gt;现代计算机系统结构如此复杂，内部存储和各种数觉结构繁多，为了保证结构的清晰和可拓展性，其中大量运用了封装与接口的思想。封装和接口两者是相互依存的，某对象（通常为底层）封装自己并为另一对象（通常为高层）提供接口，高层并不需要明白底层具体实现细节，只需知道底层提供给它的接口以及能实现的功能，除了接口，底层和高层是相对独立的，两者的联系就是通过接口。&lt;/p&gt;
+
+&lt;p&gt;事实上，封装与接口思想在生活中无处不在。封装可以理解为某一产品的实现原理和材料，而接口就是此产品的使用方法。从这角度看，封装抵抗外界干扰的能力和接口的清晰简洁是评价产品的重要标准。&lt;/p&gt;
+
+&lt;p&gt;对封装和接口运用较好的是面向对象程序设计。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;利&lt;/h2&gt;
+
+&lt;p&gt;封装接口到底能给我们带来什么呢？&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;可复用可移植&lt;/p&gt;
+
+    &lt;p&gt;底层的功能可能很多高层需要使用，此时将底层封装起来向上层提供接口&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;结构清晰，易修改&lt;/p&gt;
+
+    &lt;p&gt;目前软件代码量越来越大，其内部结构越来越复杂，后期维护管理工作越来越困难，究其原因就是没有好好利用封装和接口概念。Linux代码量巨大，为何它能在全世界众多程序员的共同努力下发展得越来越好，就是因为其内部结构清晰，代码结构紧凑，尽管它是由Ｃ语言开发，但是面向对象的思想和封装接口在代码中处处都有体现，一个经典的例子是Linux虚拟文件系统。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;合理分工合作&lt;/p&gt;
+
+    &lt;p&gt;在现代，个人完成一个成熟的产品越来越困难，分工和合作已经是一种必然的工作形态。那依据什么来分类呢？我认为因该按照层次分类，项目之初根据需要完成的要求作出接口文档，确立各个层次之间的接口，写好测试用例。然后将接口文档和具体需要的代码分配给个人，由个人实现内部细节。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;弊&lt;/h2&gt;
+
+&lt;p&gt;尽管封装与接口使得代码的可读性更好，内部结构更容易理解，后期的维护管理更加方便，但是其本身也是含有缺陷的，这缺陷不是小问题，它降低了整个系统的性能。&lt;/p&gt;
+
+&lt;p&gt;为何封装和接口会降低系统性能呢？因为高层和底层只是通过所定义的接口通信，两者内部的数据结构并不共享，倘若高层需要用到底层的某一数据结构，但是接口中并未将此数据结构定义，高层只能重新构建此数据结构。&lt;/p&gt;
+
+&lt;p&gt;说明这种情况的一个典型的例子是递归，看以下代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int fib(int n){
+	if(n==1 || n==2)
+		return 1;
+	else return fib(n-2) + fib(n-1);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;这是一个求裴波那契数列第n项的一个递归算法。代码很简单，很明显，它用到了封装和接口概念，接口就是n。然而它的效率很低，因为它重复求值了，假设需要求 &lt;code class=&quot;highlighter-rouge&quot;&gt;fib(9)&lt;/code&gt; ,在内部其分解为 &lt;code class=&quot;highlighter-rouge&quot;&gt;fib(8) + fib(7)&lt;/code&gt; ，求 &lt;code class=&quot;highlighter-rouge&quot;&gt;fib(8)&lt;/code&gt; 的时候会求 &lt;code class=&quot;highlighter-rouge&quot;&gt;fib(7)&lt;/code&gt; ，但求完 &lt;code class=&quot;highlighter-rouge&quot;&gt;fib(8)&lt;/code&gt; 后它依旧递归求解 &lt;code class=&quot;highlighter-rouge&quot;&gt;fib(7)&lt;/code&gt; ，所以说它效率很低下，远远比不过迭代算法。&lt;/p&gt;
+
+&lt;p&gt;事实上，递归都是一种封装和接口思想，每次递归新的一层时，它会把上一次的中间变量和其他结果封存在栈中，压入新的变量和数据结构，这使得递归版本的算法在性能上比不上非递归算法，一般也很简洁，很易读。递归算法也很容易转化为非递归算法。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;解决办法&lt;/h2&gt;
+
+&lt;p&gt;封装和接口有利有弊，那么应该如何取舍呢？&lt;/p&gt;
+
+&lt;p&gt;事实上我们无须取舍，因为 &lt;strong&gt;局部性原理&lt;/strong&gt; ：百分之九十的时间CPU在运行百分之十的代码。所以说主要影响程序性能的代码只是其中的百分之十，姑且将这百分之十的代码称为 &lt;em&gt;核心代码&lt;/em&gt; 。在核心代码地带，我们要精雕细琢，不放过一丝提升程序性能的机会，尽最大的努力去优化程序，然后把其中的核心思想记录下来供以后管理维护的需要。在非核心代码区域，我们要规划好封装和接口，使得其代码的可读性最大。&lt;/p&gt;
+
+&lt;p&gt;一般来讲，最底层的代码有更多的机会去执行，而更高层的代码是整个程序的主体框架，所以说我们无须取舍。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;原创博文，转载请著名出处&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        <pubDate>Fri, 21 Jul 2017 00:00:00 +0800</pubDate>
+        <link>/2017/07/21/encapsulation_and_interface/</link>
+        <guid isPermaLink="true">/2017/07/21/encapsulation_and_interface/</guid>
+        
+        <category>程序思想</category>
+        
+        
+      </item>
     
       <item>
         <title>打印所有卡特兰排列</title>
@@ -2325,624 +2398,6 @@ done
         <pubDate>Thu, 13 Oct 2016 00:00:00 +0800</pubDate>
         <link>/2016/10/13/Permutation-combination/</link>
         <guid isPermaLink="true">/2016/10/13/Permutation-combination/</guid>
-        
-        <category>笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Linux学习笔记</title>
-        <description>&lt;h2 id=&quot;catagory&quot;&gt;Catagory&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;#section&quot;&gt;目录结构&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#bash&quot;&gt;bash快捷键&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#section-1&quot;&gt;常用命令&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#section-2&quot;&gt;字符&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#section-3&quot;&gt;查找和筛选&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;目录结构&lt;/h2&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Linux目录的主要功能&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;/bin &lt;strong&gt;普通用户可使用的指令&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;/boot 启动文件&lt;/li&gt;
-  &lt;li&gt;/dev 设备文件&lt;/li&gt;
-  &lt;li&gt;/etc 系统和服务设置文件（若要修改，先备份）&lt;/li&gt;
-  &lt;li&gt;/home 用户目录&lt;/li&gt;
-  &lt;li&gt;/lib 系统几相关软件依赖的库文件&lt;/li&gt;
-  &lt;li&gt;/lost+found 若系统意外关机后，损失文件及文件碎片所放置地点。系统重启会自动修复&lt;/li&gt;
-  &lt;li&gt;/media 挂载光驱U盘等&lt;/li&gt;
-  &lt;li&gt;/mnt 临时挂载磁盘设备&lt;/li&gt;
-  &lt;li&gt;/opt 额外和需要编译安装的软件放置处&lt;/li&gt;
-  &lt;li&gt;/root root 用户目录&lt;/li&gt;
-  &lt;li&gt;/sbin 系统管理命令&lt;/li&gt;
-  &lt;li&gt;/tmp 存放系统和进程产生的临时文件&lt;/li&gt;
-  &lt;li&gt;/user 帮助文件和配置文件及程序&lt;/li&gt;
-  &lt;li&gt;/var 多类型文件 如日志文件和数据库文件&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;bash&quot;&gt;bash快捷键&lt;/h2&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;多用快捷键，特别是手残之人&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Ctrl+B &lt;strong&gt;向前移动光标一个字符&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;Ctrl+F 向后移动光标一个字符&lt;/li&gt;
-  &lt;li&gt;Ctrl+A &lt;strong&gt;移动光标到行首&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Ctrl+E 移动光标到行尾&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Ctrl+D 删除光标处字符&lt;/li&gt;
-  &lt;li&gt;Ctrl+H 删除光标的前一个字符&lt;/li&gt;
-  &lt;li&gt;Ctrl+U &lt;strong&gt;删除当前光标到行首&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;Ctrl+K 删除当前光标到行尾的所有字符&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Ctrl+L &lt;strong&gt;清屏&lt;/strong&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;绑定快捷键和命令&lt;em&gt;bind&lt;/em&gt;
-    &lt;ul&gt;
-      &lt;li&gt;bind -P 查看以绑定的快捷键&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;history 命令行历史&lt;/li&gt;
-  &lt;li&gt;alias 命令别名功能&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;常用命令&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;ls
-    &lt;ul&gt;
-      &lt;li&gt;-d显示目录&lt;/li&gt;
-      &lt;li&gt;-a显示全部&lt;/li&gt;
-      &lt;li&gt;-l显示详细&lt;/li&gt;
-      &lt;li&gt;-S文件大小排序&lt;/li&gt;
-      &lt;li&gt;-k显示文件大小以k自己为单位&lt;/li&gt;
-      &lt;li&gt;-h必须配合l使用，更加直观&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;ll(代表ls -l)
--：表示普通文件
-d：表示目录
-l：表示链接文件
-b：表示块文件，通常是磁盘或者分区
-c：字符设备文件，通常是键盘、鼠标等
-p：管道文件&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;ln 文件链接命令
-  ln [option] target link_name
-  加-s创建软连接（快捷方式），不加创建硬链接（副本）&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;touch 创建文件命令&lt;/li&gt;
-  &lt;li&gt;mkdir 创建目录 -p选项可以同事创建一个路径中多个目录&lt;/li&gt;
-  &lt;li&gt;mv 移动文件和目录（重命名）&lt;/li&gt;
-  &lt;li&gt;cp复制文件，复制目录加-R选项&lt;/li&gt;
-  &lt;li&gt;rm 删除文件目录（-R）&lt;strong&gt;不可恢复&lt;/strong&gt;，删除应加-i提示&lt;/li&gt;
-  &lt;li&gt;file 查看文件类型命令&lt;/li&gt;
-  &lt;li&gt;cat 查看文件内容&lt;/li&gt;
-  &lt;li&gt;tail 从文本尾查看文本内容（f选项动态查看，n选项指定行数）&lt;/li&gt;
-  &lt;li&gt;head 从文件头查看文本内容（n选项指定行数）&lt;/li&gt;
-  &lt;li&gt;more 分屏显示文本内容（enter显示下一行，space显示下一屏，b显示上一屏，q退出）、、&lt;/li&gt;
-  &lt;li&gt;less 类似more，但更方便&lt;/li&gt;
-  &lt;li&gt;diff 比较两个文件的内容&lt;/li&gt;
-  &lt;li&gt;wc 文本统计命令&lt;/li&gt;
-  &lt;li&gt;date查看日期时间命令
-  修改日期时间命令date和clock（将当前时间写入硬件时钟）&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;cal查看日历命令&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;联线用户命令
-    &lt;ul&gt;
-      &lt;li&gt;who 查看当前联线的用户&lt;/li&gt;
-      &lt;li&gt;finger 查看登录到系统的用户及相关信息&lt;/li&gt;
-      &lt;li&gt;w 查看正在使用系统的用户
-        &lt;ul&gt;
-          &lt;li&gt;who 主要用于一般性查看，finger侧重用户的个人详细信息，w输出用户使用系统的情况&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;与联线用户通信的命令wall write mesg
-wall广播所有用户
-write私聊
-mesg n拒绝消息&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;断开联线用户命令fuser&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;su 临时切换用户命令&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;sudo 以root权限执行命令&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;which 搜索命令：从&lt;strong&gt;环境变量&lt;/strong&gt;中搜索文件位置&lt;/li&gt;
-  &lt;li&gt;locate 文件搜索命令，更快搜索则需更新索引数据库（updatedb）&lt;/li&gt;
-  &lt;li&gt;whereis 特殊文件搜索命令&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;apropos 关键字搜索命令&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;输入输出相关命令
-    &lt;ul&gt;
-      &lt;li&gt;echo 输出&lt;/li&gt;
-      &lt;li&gt;read 接收用户输入命令&lt;/li&gt;
-      &lt;li&gt;tee 显示并保存文本命令&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;管道和输入输出重定向
-command1 | command2 | command3 …
-先执行command1，并通过管道将输出结果传递给command2处理……
-“&quot;”管道后面的命令总是使用前面的命令输出作为命令输入”””
-重定向输出的操作符是 “&amp;gt;” “»“,表示将结果写入，追加到指定文件中
-重定向输出的操作符是 “&amp;lt;” “«“,表示将结果输入，追加到指定文件中
-错误重定向的操作符是 “2»” “2&amp;gt;”
-变量 &lt;strong&gt;$?&lt;/strong&gt; 保存的是上一个命令的退出状态，数字0表示上一个命令执行成功，非零表示出现错误&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;邮件命令&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;未配置互联网邮箱，期待ing&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;mail
-格式：mail [option] [-s subject] [-c c_adress] [-b b_adress] user [-a file]….
-常用选项：
-	n：不读入设置文件/etc/mail.rc(这个文件允许用户使用外部地址而不是系统自带的sendmail发送邮件)。
-	s：设置邮件的主题信息
-	c：使用一个密件抄送列表
-	b：使用一个抄送列表
-用法事例：
-	（1）发送邮件时，通常将邮件正文放入一个文件夹内，然后使用重定向的方式读取并发送文件中的内容。例如要将文件net_info中的内容发送给用户root和user1，并将邮件主题设为net info：
-mail -s “net info” root,user1 &amp;lt;net_info&lt;/p&gt;
-
-&lt;p&gt;查看邮件
-mail [option]
-常用选项：
-	h：查看邮件标题
-	d：使用该命令加序号可以删除指定邮件
-	f：查看光标指向的邮件
-	n：跳转到指定序号的邮件
-	q：退出并将已经阅读的邮件存入文件~/mbox中
-	x：退出
-	!：允许使用shell命令&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;启动新shell命令exec
-格式：exec shell-command
-exec执行时，会使用新的shell替代当前的shell，如果没有特别指明，exec将会在命令执行完毕后退出新启动的shell。在实际应用中，exec长用来处理文件描述符&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;字符&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;正则表达式&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;双引号
-通常用来表示字符串，可用来屏蔽特殊字符&lt;/li&gt;
-      &lt;li&gt;单引号
-和双引号相似，单双交替使用&lt;/li&gt;
-      &lt;li&gt;反引号
-在字符串内表示命令&lt;/li&gt;
-      &lt;li&gt;美元符号
-引用变量，还可以用来置换一个命令，使用美元符号置换命令时，bash会将相应的命令放入子shell执行&lt;/li&gt;
-      &lt;li&gt;反斜线
-转义字符&lt;/li&gt;
-      &lt;li&gt;问号
-通配符，代表一个字符&lt;/li&gt;
-      &lt;li&gt;星号
-通配符，代表多个字符&lt;/li&gt;
-      &lt;li&gt;[]
-正则中的普通字符组&lt;/li&gt;
-      &lt;li&gt;[!]
-排除字符组&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;使用查找模式是，将其放入”//”中，然后放入命令
-.通配符
-*重复
-^行首匹配符
-$行尾匹配符
-[]普通字符组
-[^]排除字符组
-{m,n}量词&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;多条命令中的逻辑运算符&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;||：逻辑或
-command1 || command2
-执行命令时，先执行1，若1成功，则跳过2，若1执行失败，则执行2&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;&amp;amp;&amp;amp;：逻辑与
-command1 &amp;amp;&amp;amp; command2
-执行命令时，先执行1，若1成功，则执行2，若1执行失败，则跳过2&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;括号
-提高命令的优先级&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;查找和筛选&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;查找工具&lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt;的基本格式&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find [path] [expression]&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;常用选项&lt;/p&gt;
-
-    &lt;p&gt;path：查找路径。未指定则为.&lt;/p&gt;
-
-    &lt;p&gt;expression：表达式，通常由 &lt;strong&gt;选项、测试、动作&lt;/strong&gt; 三类构成&lt;/p&gt;
-
-    &lt;p&gt;选项用于指定find查找的目录、帮助等信息&lt;/p&gt;
-
-    &lt;p&gt;help&lt;/p&gt;
-
-    &lt;p&gt;depth 先在当前目录查找然后到当前子目录查找&lt;/p&gt;
-
-    &lt;p&gt;maxdepth LEVEL 向下搜索到第LEVEL层&lt;/p&gt;
-
-    &lt;p&gt;mindepth LEVEL&lt;/p&gt;
-
-    &lt;p&gt;mount 不搜索远程文件系统&lt;/p&gt;
-
-    &lt;p&gt;follow 遇到链接文件也检查链接指向的文件&lt;/p&gt;
-
-    &lt;p&gt;测试：使得 &lt;strong&gt;输出&lt;/strong&gt; 更加详细的信息&lt;/p&gt;
-
-    &lt;p&gt;name 按文件名查找&lt;/p&gt;
-
-    &lt;p&gt;perm 按文件权限查找&lt;/p&gt;
-
-    &lt;p&gt;type 查找某一类型的文件&lt;/p&gt;
-
-    &lt;p&gt;mtime 按修改时间查找&lt;/p&gt;
-
-    &lt;p&gt;atime 按文件访问时间查找&lt;/p&gt;
-
-    &lt;p&gt;size  按文件大小查找&lt;/p&gt;
-
-    &lt;p&gt;User  按文件属主查找&lt;/p&gt;
-
-    &lt;p&gt;group 按文件属组查找&lt;/p&gt;
-
-    &lt;p&gt;nouser 查找没有属主的文件&lt;/p&gt;
-
-    &lt;p&gt;nogroup 查找没有属组的文件&lt;/p&gt;
-
-    &lt;p&gt;动作：指定如何查找和处理查找的文件&lt;/p&gt;
-
-    &lt;p&gt;prune 不在指定目录查找&lt;/p&gt;
-
-    &lt;p&gt;print查找到的文件输出到标准输出&lt;/p&gt;
-
-    &lt;p&gt;exec  对查找到的文件执行exec后附带的命令&lt;/p&gt;
-
-    &lt;p&gt;ok      对查找到的文件执行ok动作后的命令，执行前提问&lt;/p&gt;
-
-    &lt;p&gt;大多数情况下，&lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt;至少包含一个测试和一个动作&lt;/p&gt;
-
-    &lt;p&gt;例子：&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc&lt;/code&gt;目录下查找&lt;code class=&quot;highlighter-rouge&quot;&gt;smb.conf&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find /etc -name &quot;smb.conf&quot; -print&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc&lt;/code&gt;目录下查找所有配置文件&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find /etc -name &quot;*.conf&quot; -print&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;当前目录中查找名为&lt;code class=&quot;highlighter-rouge&quot;&gt;message&lt;/code&gt;的文件&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find -name &quot;message&quot; -print&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find -name &quot;[a-z][a-z][0-9].d&quot; -print&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;后台执行&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find / -name &quot;*.conf&quot; -print &amp;amp;&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;利用&lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt;查找到文件之后，可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;exec&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;ok&lt;/code&gt;后面紧跟要执行的Shell命令，再空一格后面试一格大括号“{}”，最后加上反斜杠“\”和一个分号。&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-exec [Shell命令] {} \;&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-ok [Shell命令] {} \;&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;xarg需要借助管道。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;查找文本工具&lt;code class=&quot;highlighter-rouge&quot;&gt;grep&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;grep&lt;/code&gt;工具在文件中查找与字符串pattern匹配的内容，如果找到，则将整行输出到标准输出
-利用管道可以在输出结果中查找&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;转换和删除重复命令&lt;code class=&quot;highlighter-rouge&quot;&gt;tr&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;基本格式：&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tr [options] [string1] [string2]&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string1&lt;/code&gt;用于查询的字符串，&lt;code class=&quot;highlighter-rouge&quot;&gt;string2&lt;/code&gt;用于转换查询到的字符串，tr命令不能读取文件，若要转换文件中的内容，可以用重定向输入输出和管道的方法&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;排序命令&lt;code class=&quot;highlighter-rouge&quot;&gt;sort&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sort&lt;/code&gt;处理的文本可以来自文本文件，也可以来自标准输入和管道&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;用户和文件权限管理&lt;/h2&gt;
-
-&lt;h4 id=&quot;section-5&quot;&gt;用户管理&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;系统用户文件：&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/passwd&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;文件中每一行都是一个用户的信息，用:将各个字段分开&lt;/p&gt;
-
-    &lt;p&gt;第一个字段为 &lt;strong&gt;用户名&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;第二个字段为 &lt;strong&gt;用户登录密码&lt;/strong&gt;，x表示密码保存在&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/shadow&lt;/code&gt;中&lt;/p&gt;
-
-    &lt;p&gt;第三个字段为 &lt;strong&gt;用户ID号（UID）&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;第四个字段为 &lt;strong&gt;用户所属组的ID号（GID）&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;第五个字段通常为空，保存其他信息&lt;/p&gt;
-
-    &lt;p&gt;第六个字段为 &lt;strong&gt;用户家目录&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;第七个字段保存的是用户使用的Shell&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;用户密码文件：&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/shadow&lt;/code&gt;(影子文件)&lt;/p&gt;
-
-    &lt;p&gt;第一个字段为 &lt;strong&gt;用户名&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;第二个字段为 &lt;strong&gt;密码加密后的密文字符串&lt;/strong&gt; （$1$开头表示采用MD5加密）&lt;/p&gt;
-
-    &lt;p&gt;第三个字段为 &lt;strong&gt;修改密码的天数&lt;/strong&gt; （从19700101算起）&lt;/p&gt;
-
-    &lt;p&gt;第四个字段表示 &lt;strong&gt;两次修改密码之间的间隔天数&lt;/strong&gt;，0代表随时修改&lt;/p&gt;
-
-    &lt;p&gt;第五个字段表示密码最长存留天数（1表示用户不能改变密码）。&lt;/p&gt;
-
-    &lt;p&gt;第六个字段表示密码过期之前的警告天数（-1表示没有警告）&lt;/p&gt;
-
-    &lt;p&gt;第七个字段表示密码过期之后禁止用户登录的天数（1表示不会禁用）&lt;/p&gt;
-
-    &lt;p&gt;第八个字段表示过期后禁用的天数（-1表示不会禁用），以自19700101以来的天数表示&lt;/p&gt;
-
-    &lt;p&gt;最后一个字段为保留字段&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;软件专有用户：保证安全性&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;添加用户命令&lt;code class=&quot;highlighter-rouge&quot;&gt;useradd&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;命令格式：&lt;/p&gt;
-
-    &lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;useradd [option] username&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;常用选项：&lt;/p&gt;
-
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- g：指定用户所属用户组
-- s：指定用户使用的Shell
-&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;ul&gt;
-    &lt;li&gt;编译安装软件时，有些软件要求建立软件专有用户，由于软件专有用户不能直接登录系统，要用s选项修改软件专有用户使用的Shell，例如使用useradd命令添加MySQL的专有用户：&lt;code class=&quot;highlighter-rouge&quot;&gt;useradd -s /sbin/nologin mysql&lt;/code&gt;&lt;/li&gt;
-    &lt;li&gt;根据安装的软件包不同，家目录中可能会存在一些别的初始化文件，初始化文件模板放在&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/skel/&lt;/code&gt;&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;设置用户密码命令&lt;code class=&quot;highlighter-rouge&quot;&gt;passwd&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;命令格式：&lt;/p&gt;
-
-    &lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;passwd [username]&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;若不指定用户，则修改当前用户的密码&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;删除用户命令&lt;code class=&quot;highlighter-rouge&quot;&gt;userdel&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;命令格式：&lt;/p&gt;
-
-    &lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;userdel [option] username&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;常用选项：&lt;/p&gt;
-
-    &lt;p&gt;r：删除用户时，连同用户的家目录和邮件文件一起删除&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;用户管理命令&lt;code class=&quot;highlighter-rouge&quot;&gt;usermod&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;命令格式：&lt;/p&gt;
-
-    &lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;username [option] username&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;常用选项：&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;L:锁定用户，即禁止用户登录系统&lt;/li&gt;
-      &lt;li&gt;U：解除锁定&lt;/li&gt;
-      &lt;li&gt;e：指定用户过期的日期&lt;/li&gt;
-      &lt;li&gt;f：指定用户过期之后的缓冲天数，即过期之后还能登录的天数&lt;/li&gt;
-      &lt;li&gt;d：为用户指定新的家目录&lt;/li&gt;
-      &lt;li&gt;m：为用户指定新的家目录，移动原来家目录中的所有文件&lt;/li&gt;
-      &lt;li&gt;s：修改用户默认Shell&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;也可以通过修改文件/etc/login.defs 的方式，修改用户的密码策略&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;section-6&quot;&gt;用户组管理&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;用户组文件&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/group&lt;/code&gt;:系统用户组文件&lt;/p&gt;
-
-    &lt;p&gt;第一个字段为用户组名&lt;/p&gt;
-
-    &lt;p&gt;第二个字段为组密码，为空说明不需要密码&lt;/p&gt;
-
-    &lt;p&gt;第三个字段为GID&lt;/p&gt;
-
-    &lt;p&gt;第四个字段为用户列表&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/gshadow&lt;/code&gt;:用户组密码文件&lt;/p&gt;
-
-    &lt;p&gt;第一个字段为用户组名&lt;/p&gt;
-
-    &lt;p&gt;第二个字段为密码&lt;/p&gt;
-
-    &lt;p&gt;第三个字段为用户组管理员&lt;/p&gt;
-
-    &lt;p&gt;第四个字段为组成员列表&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;groupadd&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;groupdel&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;groupmod&lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-7&quot;&gt;基本权限及管理命令&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;文件属主和属组&lt;/p&gt;
-
-    &lt;p&gt;ls -l 命令中第一个是属主，第二个是属组&lt;/p&gt;
-
-    &lt;p&gt;修改文件属主和属组的命令&lt;code class=&quot;highlighter-rouge&quot;&gt;chown&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;chgrp&lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;文件权限和表示方法&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;传统文件权限&lt;/p&gt;
-
-        &lt;p&gt;三类权限：读（r）、写（w）、执行（x）&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;符号表示文件权限&lt;/p&gt;
-
-        &lt;p&gt;9个字符分为三组，每组3个字符&lt;/p&gt;
-
-        &lt;p&gt;第一组：属主权限位（u）&lt;/p&gt;
-
-        &lt;p&gt;第二组：属组权限位（g）&lt;/p&gt;
-
-        &lt;p&gt;第三组：其他用户权限（o）&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;文件权限绝对模式&lt;/p&gt;
-
-        &lt;p&gt;1表示执行权限&lt;/p&gt;
-
-        &lt;p&gt;2表示写权限&lt;/p&gt;
-
-        &lt;p&gt;4表示读权限&lt;/p&gt;
-
-        &lt;p&gt;三者相加&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;文件权限管理命令&lt;code class=&quot;highlighter-rouge&quot;&gt;chmod&lt;/code&gt;&lt;/p&gt;
-
-        &lt;p&gt;命令格式：&lt;/p&gt;
-
-        &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;chmod [option] [mode] file&lt;/code&gt;&lt;/p&gt;
-
-        &lt;p&gt;常用选项：&lt;/p&gt;
-
-        &lt;p&gt;R递归修改目录及目录中所有文件权限&lt;/p&gt;
-
-        &lt;p&gt;mode可以拆分为操作对象、操作符、权限列表：&lt;/p&gt;
-
-        &lt;p&gt;操作对象：u、g、o、a&lt;/p&gt;
-
-        &lt;p&gt;操作符：+添加权限 -删除权限 =赋予权限&lt;/p&gt;
-
-        &lt;p&gt;权限列表：r、w、x的组合&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;##&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;未完待续&lt;/p&gt;
-&lt;/blockquote&gt;
-</description>
-        <pubDate>Mon, 10 Oct 2016 00:00:00 +0800</pubDate>
-        <link>/2016/10/10/Linux-note/</link>
-        <guid isPermaLink="true">/2016/10/10/Linux-note/</guid>
-        
-        <category>Linux</category>
         
         <category>笔记</category>
         
