@@ -5,9 +5,339 @@
     <description>喃喃自语，唯有沉默</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 21 Jul 2017 13:37:13 +0800</pubDate>
-    <lastBuildDate>Fri, 21 Jul 2017 13:37:13 +0800</lastBuildDate>
+    <pubDate>Tue, 01 Aug 2017 17:24:05 +0800</pubDate>
+    <lastBuildDate>Tue, 01 Aug 2017 17:24:05 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>文件压缩器（二）</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;小根堆&lt;/h2&gt;
+
+&lt;p&gt;前面说了，构建赫夫曼树要借住小根堆。小根堆是用数组存储的完全二叉树,结构定义如下:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;typedef struct min_heap {
+	huffman_node *val[MAX_SIZE];
+	int size;
+} min_heap;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;它存储的是赫夫曼树结点的指针，用结点的frenquency来比较大小确定结构。此数据结构最重要的一个成员函数是&lt;code class=&quot;highlighter-rouge&quot;&gt;heapify()&lt;/code&gt;，此函数是从上到下维护小根堆的性质，运行代价低。代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void heapify(min_heap *H, int index){
+	int left = heap_left(index);
+	int right = heap_right(index);
+	int min = index;
+	if(left&amp;lt;H-&amp;gt;size &amp;amp;&amp;amp; H-&amp;gt;val[left]-&amp;gt;frequency &amp;lt; H-&amp;gt;val[index]-&amp;gt;frequency)
+		min = left;
+	if(right&amp;lt;H-&amp;gt;size &amp;amp;&amp;amp; H-&amp;gt;val[right]-&amp;gt;frequency &amp;lt; H-&amp;gt;val[index]-&amp;gt;frequency)
+		min = right;
+	if( min != index ){
+		huffman_node* temp = H-&amp;gt;val[min];
+		H-&amp;gt;val[min] = H-&amp;gt;val[index];
+		H-&amp;gt;val[index] = temp;
+		heapify(H, min);
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;取出堆中最小元素并保存堆的性质&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//取出最小堆的最小值
+huffman_node *heap_extract_min(min_heap *H){
+	if(H-&amp;gt;size&amp;lt;1){
+		printf(&quot;error:the heap is empty\n&quot;);
+		return NULL;
+	}
+	huffman_node *result = H-&amp;gt;val[1];
+	H-&amp;gt;val[1] = H-&amp;gt;val[H-&amp;gt;size];
+	H-&amp;gt;size--;
+	heapify(H,1);
+	return result;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;向堆中插入元素&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void heap_insert(min_heap *H, huffman_node *key){
+	if(!key){
+		printf(&quot;error:the key is NULL \n&quot;);
+		return;
+	}
+	H-&amp;gt;size++;
+	H-&amp;gt;val[H-&amp;gt;size] = key;
+	int i = H-&amp;gt;size;
+	while(i&amp;gt;1 &amp;amp;&amp;amp; H-&amp;gt;val[heap_parent(i)]-&amp;gt;frequency &amp;gt; H-&amp;gt;val[i]-&amp;gt;frequency){
+		huffman_node *temp = H-&amp;gt;val[heap_parent(i)];
+		H-&amp;gt;val[heap_parent(i)] = H-&amp;gt;val[i];
+		H-&amp;gt;val[i] = temp;
+		i = heap_parent(i);
+	}
+	return;
+}
+//初始化堆
+void init_heap(min_heap *H){
+	H-&amp;gt;size = 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;构建赫夫曼树&lt;/h2&gt;
+
+&lt;p&gt;构建赫夫曼树的前提是已经弄好小根堆并存好结点元素,代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;huffman_node *creat_huffman_tree(min_heap *H){
+	if(H-&amp;gt;size&amp;lt;1){
+		printf(&quot;error:the heap is empty\n&quot;);
+		return NULL;
+	}
+	int n = H-&amp;gt;size;
+	for(int i=1; i&amp;lt;n; i++){
+		huffman_node *temp = (huffman_node *)malloc(sizeof(huffman_node));
+		temp-&amp;gt;leaf = 0;
+		temp-&amp;gt;left = heap_extract_min(H);
+		temp-&amp;gt;right = heap_extract_min(H);
+		temp-&amp;gt;frequency = temp-&amp;gt;left-&amp;gt;frequency + temp-&amp;gt;right-&amp;gt;frequency;
+		heap_insert(H, temp);
+	}
+	//断言，判断赫夫曼树是否构建成功
+	if(H-&amp;gt;size!=1)
+		printf(&quot;error:the huffman tree creat error\n&quot;);
+	return heap_extract_min(H);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;赫夫曼结点都存在内存堆中，要在构造转码表完成后释放内存，否则会导致内存泄漏&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;构建转码表&lt;/h2&gt;
+
+&lt;p&gt;什么是转码表？&lt;/p&gt;
+
+&lt;p&gt;转码表就是原字符和编码之间的映射。那么如何利用赫夫曼树去构建转码表呢？&lt;/p&gt;
+
+&lt;p&gt;显而易见，从根结点到叶结点的每一条路径都是转码表中的一项。利用栈可以很容易的遍历按照要求遍历赫夫曼树。&lt;/p&gt;
+
+&lt;p&gt;转码项的定义：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;typedef struct code{
+	unsigned short int size;
+	unsigned char record[MAX_SIZE];
+} code;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;record的每一个元素代表一个二进制位，因为ｃ语言不提供直接对二进制的操作，为了简便用&lt;code class=&quot;highlighter-rouge&quot;&gt;unsigned char&lt;/code&gt;代替。&lt;/p&gt;
+
+&lt;p&gt;转码表的定义：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;typedef struct table{
+	code bucket[MAX_SIZE-1];
+} table;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MAX_SIZE&lt;/code&gt;是一个宏，定义为256&lt;/p&gt;
+
+&lt;p&gt;构造转码表&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void creat_table(huffman_node *root, table *T){
+	stack *s;
+	stack ss;
+	s = &amp;amp;ss;
+	init_stack(s);
+
+	huffman_node *p = root;
+	code temp;
+	temp.size = 0;
+	int flag=1;
+	while(!stack_empty(s) || !p-&amp;gt;leaf){
+		if(!p-&amp;gt;leaf){
+			push(s, p, temp.size);
+			p = p-&amp;gt;left;
+			temp.record[temp.size] = 0;
+			temp.size++;
+		}
+		else{
+			T-&amp;gt;bucket[p-&amp;gt;c].size = temp.size;
+			for(int i=0; i&amp;lt;temp.size; i++)
+				T-&amp;gt;bucket[p-&amp;gt;c].record[i] = temp.record[i];
+
+			temp.size = s-&amp;gt;size[s-&amp;gt;top];
+			//释放叶结点
+			free(p);
+			p = s-&amp;gt;ptr[s-&amp;gt;top];
+			pop(s);
+			temp.record[temp.size] = 1;
+			temp.size++;
+			huffman_node *xls = p;
+			p = p-&amp;gt;right;
+			//释放已经寻址左右孩子的中间结点
+			free(xls);
+		}
+	}
+	//循环不变式：入栈的指针必定是中间结点，度为2,出栈的时候往右走
+	//出此循环时，此时栈为空，并且p指向最后一个叶结点，此叶结点未加入转换表
+	T-&amp;gt;bucket[p-&amp;gt;c].size = temp.size;
+	for(int i=0; i&amp;lt;temp.size; i++)
+		T-&amp;gt;bucket[p-&amp;gt;c].record[i] = temp.record[i];
+	free(p);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;回顾二叉树的非递归遍历，其中也运用到了栈，上述代码的主要执行过程如下：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;定义相关数据结构，其中栈要存储中间结点的指针和此时临时遍历temp中的有效位数size.&lt;/li&gt;
+  &lt;li&gt;从根结点出发，往左子结点走，然后存入0。入栈结点指针和size，&lt;/li&gt;
+  &lt;li&gt;若当前非叶结点，往左&lt;/li&gt;
+  &lt;li&gt;若为叶结点，则将此时叶结点的c和temp存入转码表，然后出栈，往右走&lt;/li&gt;
+  &lt;li&gt;重复此步骤，期间要释放结点所占据的内存&lt;/li&gt;
+  &lt;li&gt;最后退出循环时，最后一个叶结点未加入转码表，加入并释放内存。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;此函数利用栈来构建转码表并释放内存&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;原创博文，转载请注明出处&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        <pubDate>Tue, 01 Aug 2017 00:00:00 +0800</pubDate>
+        <link>/2017/08/01/compress2/</link>
+        <guid isPermaLink="true">/2017/08/01/compress2/</guid>
+        
+        <category>项目：文件压缩器</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>文件压缩器（一）</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;原理&lt;/h2&gt;
+
+&lt;p&gt;计算机给我们提供的磁盘文件模型和内存模型是不同的：前者是将文件看作一个流来使用，用文件偏移量来寻址;而内存是通过线性地址寻址。磁盘的管理是以文件为单位管理，其与进程的交互主要集中在文件上，而内存与进程联系紧密，进程定义的数据结构存储在内存中。&lt;/p&gt;
+
+&lt;p&gt;赫夫曼编码是一种变长编码方式，对于出现频率高的字符，它编码后占据的位数少，而很少出现的字符，编码后占据的位数多。一般来讲，一个文件的字符出现次数分布得越不均匀，则赫夫曼编码的效率越高。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;赫夫曼编码&lt;/h2&gt;
+
+&lt;p&gt;怎样构造赫夫曼编码呢？&lt;/p&gt;
+
+&lt;p&gt;赫夫曼编码的最重要的数据结构是赫夫曼树，赫夫曼树是一棵满二叉树，不存在度为1的结点，所有的叶结点都是一项转码方式。赫夫曼树的运用的从根结点出发，若走向左子树，则转码方式加1，往右子树走加0（两者调换也可以）,直到走到根结点。&lt;/p&gt;
+
+&lt;p&gt;所以说构造赫夫曼树就是构造赫夫曼编码，而构造赫夫曼树需要借助一个数据结构：小根堆。小根堆是比较字符出现的频率。&lt;/p&gt;
+
+&lt;p&gt;首先遍历一次文件，将文件中所有字符出现的频率记录下来存入一个小根堆中。&lt;/p&gt;
+
+&lt;p&gt;然后取出小根堆中频率最低的两个元素，新建一个元素，此元素是取出来的两个元素的父结点，其频率是两子结点频率之和，再将其插入小根堆。&lt;/p&gt;
+
+&lt;p&gt;重复上述步骤，直至小根堆中只剩下一个元素，此元素是赫夫曼树的根结点。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;typedef struct huffman_node {
+	unsigned int frequency;
+	int leaf;
+	struct huffman_node *left;
+	struct huffman_node *right;
+	unsigned char c;
+} huffman_node;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;赫夫曼树结点如上所示，它的叶结点包含frequency、c两项，而中间结点包含frequency、left、right三项，leaf是用来区分两者。若要节省内存的话也可以用联合体来定义此数据结构。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;测试&lt;/h2&gt;
+
+&lt;p&gt;压缩器压缩文件后解压要和原文件一致，因此写个测试来验证。代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#include&amp;lt;stdio.h&amp;gt;
+#include &amp;lt;fcntl.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+#define BUFFSIZE 4096
+int is_file_equ(const char *name1, const char *name2){
+	int fd1,fd2;
+	if( (fd1=open(name1, O_RDONLY)) &amp;lt; 0 ){
+		printf(&quot;error:can\'t open file %s&quot;, name1);
+		abort();
+	}
+	if( (fd2 = open(name2, O_RDONLY))&amp;lt;0 ){
+		printf(&quot;error:can\'t open file %s&quot;, name2);
+		abort();
+	}
+	char buf1[BUFFSIZE];
+	char buf2[BUFFSIZE];
+	int n1;
+	int n2;
+	while( (n1 = read(fd1, buf1, BUFFSIZE))&amp;gt;0 ){
+		if( (n2 = read(fd2, buf2, BUFFSIZE))!=n1 )
+			return 0;
+		for(int i=0; i&amp;lt;n1; i++)
+			if( buf1[i]!=buf2[i] )
+				return 0;
+	}
+	if(n1&amp;lt;0){
+		printf(&quot;error:read file function error\n&quot;);
+		abort();
+	}
+	close(fd1);
+	close(fd2);
+	return 1;
+}
+
+int main(int argc, char *argv[]){
+	if(argc&amp;lt;2)
+		return 1;
+	if(is_file_equ(argv[1], argv[2]))
+		printf(&quot;test success\n&quot;);
+	else
+		printf(&quot;test failure\n&quot;);
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;主体结构&lt;/h2&gt;
+
+&lt;p&gt;现在看来，压缩器的主体结构已经很清晰了。压缩过程如下&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;遍历原文件，记录各个字符出现的频率&lt;/li&gt;
+  &lt;li&gt;根据频率构建赫夫曼树&lt;/li&gt;
+  &lt;li&gt;根据赫夫曼树构建转码表&lt;/li&gt;
+  &lt;li&gt;遍历源文件，根据转码表转码，写入压缩文件&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;为了便于解压，我们要将赫夫曼树的信息也写入文件，这里选择将各个字符的频率表和文件大小写入文件中。&lt;/p&gt;
+
+&lt;p&gt;解压过程：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;读取频率表&lt;/li&gt;
+  &lt;li&gt;根据频率表构建赫夫曼树&lt;/li&gt;
+  &lt;li&gt;读压缩文件，一次一位，根据所读信息走赫夫曼树，直到叶结点。&lt;/li&gt;
+  &lt;li&gt;将读出的数据写入解压文件。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当然，上述过程是对于普通文件而言，对于特殊文件诸如块设备文件字符设备文件套接字等是不行的，这些特殊文件的处理方法就是忽略报错。但是对于目录，可以将目录信息存储下来并压缩目录中的文件，对于符号链接可以保存相关信息然后解压时重建。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;此项目代码在Linux环境下运行，其中运行的很多函数是POSIX标准定义的&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;原创博文，转载请注明出处&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        <pubDate>Mon, 31 Jul 2017 00:00:00 +0800</pubDate>
+        <link>/2017/07/31/compress1/</link>
+        <guid isPermaLink="true">/2017/07/31/compress1/</guid>
+        
+        <category>项目：文件压缩器</category>
+        
+        
+      </item>
     
       <item>
         <title>程序思想：封装与接口</title>
@@ -1551,855 +1881,6 @@ int right(int index)
         <category>代码</category>
         
         <category>算法</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>shell编程笔记</title>
-        <description>&lt;h2 id=&quot;catalog&quot;&gt;Catalog&lt;/h2&gt;
-
-&lt;p&gt;1、&lt;a href=&quot;#section&quot;&gt;shell变量&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;2、&lt;a href=&quot;#section-1&quot;&gt;shell流程控制&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;shell&quot;&gt;shell变量&lt;/h2&gt;
-
-&lt;h4 id=&quot;section&quot;&gt;变量&lt;/h4&gt;
-
-&lt;p&gt;shell变量是动态类型，使用前无需先声明定义；shell是弱类型语言，可以将任何类型的值赋给同一变量名。准确的说，shell变量统一的按照字符串存储，但是根据变量的上下文环境，允许程序执行一些不同的操作，例如字符串的比较和整数的加减等。&lt;/p&gt;
-
-&lt;p&gt;例子：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;123
-&lt;span class=&quot;nb&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;x += 1&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;x = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;#将x中的1换为abc&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;/1/abc&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;y = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$y&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;declare&lt;/span&gt; -i y
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;y = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$y&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;z&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;abc22
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;z = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$z&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;#将z中的abc换为11&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;/abc/11&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;m = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$m&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;n = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;n += 1&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;n = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;p = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$p&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;p += 1&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;p = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$p&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;执行结果：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;x = 124
-y = abc24
-y = abc24
-z = abc22
-m = 1122
-n =
-n = 1
-p =
-p = 1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;变量定义&lt;/p&gt;
-
-&lt;p&gt;事实上，shell变量无须声明定义，每一个为使用的变量名都是一个空字符串，直接可以运算。&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;变量名=值&lt;/code&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;等号两边不能有空格&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;变量清空&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;unset 变量名&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;引用变量名用${变量名}引用&lt;/p&gt;
-
-&lt;p&gt;尽管无须声明定义，但为了更好的控制变量，shell提供declare命令来声明变量&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;declare attribute variable&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;其中，attribute表示变量的属性，常用属性如下：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;-p：显示所有变量的值&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;-i：将变量定义为整数&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;-r：将变量声明为只读变量&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;-a：将变量声明为数组变量，不过没有必要。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;-f：显示所有自定义函数，包括名称和函数体&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;-x：将变量设置为环境变量&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;declare命令又写作typeset&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;变量和引号&lt;/h4&gt;
-
-&lt;p&gt;shell中有三种引号：分别为单引号，双引号，反引号&lt;/p&gt;
-
-&lt;p&gt;在反引号中的语句被shell当成命令在当前命令执行之前执行，并以它的标准输出取代整个反引号&lt;/p&gt;
-
-&lt;p&gt;双引号，除美元符号、单引号、反引号、反斜线之外，其他所有字符被当成普通字符&lt;/p&gt;
-
-&lt;p&gt;单引号，所有字符当成普通字符&lt;/p&gt;
-
-&lt;p&gt;反斜线，转义字符&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;命令替换：&lt;strong&gt;`shell_command`&lt;/strong&gt; 与 &lt;strong&gt;$(shell_command)&lt;/strong&gt; 等价&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;变量的作用域&lt;/h4&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;全局变量
- 在函数外部定义的变量是全局变量，全局变量可以在函数内部使用。&lt;/li&gt;
-  &lt;li&gt;局部变量
- local关键字定义局部变量&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;系统变量&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;$HOME 家目录&lt;/li&gt;
-  &lt;li&gt;$PWD  当前路径&lt;/li&gt;
-  &lt;li&gt;$1、$2、… 运行脚本时的位置参数&lt;/li&gt;
-  &lt;li&gt;$0  当前脚本的名称&lt;/li&gt;
-  &lt;li&gt;$*  保存传递给脚本或进程的所有参数&lt;/li&gt;
-  &lt;li&gt;$$  当前进程或脚本的PID号&lt;/li&gt;
-  &lt;li&gt;$!  后台运行的最后一个进程的PID号&lt;/li&gt;
-  &lt;li&gt;$1  用于返回上一条命令是否成功执行。执行成功返回0，不成功返回1&lt;/li&gt;
-  &lt;li&gt;$#  用于保存脚本参数的个数&lt;/li&gt;
-  &lt;li&gt;$@&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;例子&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#This is a test script&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;#利用$0输出当前脚本的名称&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;script name:&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$0&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;all parameters:&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$*&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;PID is the :&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$$&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;success of previous command:&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;变量运算&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;算数运算符：+、 -、 *、 /、 **(乘方)、 %(求余)&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;在Linux Shell中，用户可以通过四种方式执行算数运算&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;expr外部程序&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;expr是一个Shell命令，可以计算整个某个表达式的值，基本语法如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;expr expression&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;例子：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;expr 2 + 100&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;result = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$result&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;expr 2 - 100&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;result = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$result&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;expr 2 &lt;span class=&quot;se&quot;&gt;\*&lt;/span&gt; 5&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;result = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$result&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;expr 24 / 8&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;result = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$result&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;expr &lt;span class=&quot;se&quot;&gt;\(&lt;/span&gt; 2 - 6 &lt;span class=&quot;se&quot;&gt;\)&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\*&lt;/span&gt; 12&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;result = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$result&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;运算结果：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;result = 102
-result = -98
-result = 10
-result = 3
-result = -48
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;运算符两侧要添加空格，*和（ ）要转义，&lt;code class=&quot;highlighter-rouge&quot;&gt;expr&lt;/code&gt;不能计算乘方运算&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;使用&lt;code class=&quot;highlighter-rouge&quot;&gt;$((...))&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;使用这种形式来进行算术运算写法比较自由，无须对运算符和括号进行转义处理，可以采用松散或者紧凑的格式来书写表达式&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#！/bin/bash
-
-result=$((3+6))
-echo &quot;result = $result&quot;
-result=$(( 3 + 9 ))
-echo &quot;result = $result&quot;
-result=$(( 7/5 ))
-echo &quot;result = $result&quot;
-result=$((8%3))
-echo &quot;result = $result&quot;
-result=$(( (1-4)*5 ))
-echo &quot;result = $result&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;使用&lt;code class=&quot;highlighter-rouge&quot;&gt;$[...]&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;与&lt;code class=&quot;highlighter-rouge&quot;&gt;$((...))&lt;/code&gt;相同&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;使用&lt;code class=&quot;highlighter-rouge&quot;&gt;let&lt;/code&gt;命令&lt;/p&gt;
-
-    &lt;p&gt;可以使用复合运算符&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;位运算&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;m&amp;gt;&amp;gt;n&lt;/code&gt;数m右移n位&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;m&amp;lt;&amp;lt;n&lt;/code&gt;数m左移n位&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt; 按位与&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;|&lt;/code&gt; 按位或&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;~ &lt;/code&gt; 按位非&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;^&lt;/code&gt; 按位异或&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;shell-1&quot;&gt;shell流程控制&lt;/h2&gt;
-
-&lt;h4 id=&quot;section-5&quot;&gt;条件测试和捕获信号&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;0表示true，1表示false&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;退出状态
-数字0表示命令或者程序成功执行
-数字1表示命令或者程序没有成功执行
-&lt;code class=&quot;highlighter-rouge&quot;&gt;exit 0&lt;/code&gt;表示脚本成功执行
-&lt;code class=&quot;highlighter-rouge&quot;&gt;exit 1&lt;/code&gt;表示脚本未成功执行&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;条件测试基本语法&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;test expression&lt;/code&gt; 或 &lt;code class=&quot;highlighter-rouge&quot;&gt;[ expression ]&lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;[命令的作用与test相同，为了增加可读性，在后面添加一个]，条件表达式和[ ]之间必须要有空格&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;文件测试&lt;/p&gt;
-
-    &lt;p&gt;格式：&lt;code class=&quot;highlighter-rouge&quot;&gt;[ -command parameter ]&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;常用命令及其含义&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;-d：测试目录是否存在&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-f：测试文件是否存在&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-L：测试链接文件是否存在&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-b：测试块设备文件是否存在&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-c：测试字符设备文件是否存在&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-e：测试指定文件或目录是否存在&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;文件权限测试&lt;/p&gt;
-
-    &lt;p&gt;常用命令&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;-w：判断指定文件是否存在，并且有写权限&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-r:判断指定文件是否存在，并且有读权限&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-x:判断指定文件是否存在，并且有执行权限&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-u:判断指定文件是否存在，并且有SUID权限&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;针对脚本的执行用户&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;变量测试&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;[ -z $变量名 ]&lt;/code&gt;测试字符串是否为空&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;字符串测试&lt;/p&gt;
-
-    &lt;p&gt;命令格式：&lt;code class=&quot;highlighter-rouge&quot;&gt;[ parameter1 operator parameter2 ]&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;parameter1和parameter2表示字符串，operator表示操作符&lt;/p&gt;
-
-    &lt;p&gt;操作符：&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;=：判断是否相等&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;！=：判断是否不等&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-n：判断是否为非空&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;数值测试：&lt;/p&gt;
-
-    &lt;p&gt;操作命令&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;-eq(=)：判断是否相等&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-ne(!=)：判断是否不等&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-lt：&amp;lt;&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-le：&amp;lt;=&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-gt：&amp;gt;&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-ge：&amp;gt;=&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;逻辑操作符&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;-a：与&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;-o：或&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;!：非&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-6&quot;&gt;条件判断语句&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;if语句&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  if 条件表达式
-    then
-      语句 1
-      语句 2
-      ......
-  fi
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;if else语句&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  if 条件表达式
-    then
-      语句块 1
-  else
-      语句块 2
-  fi
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;if elif语句&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  if 条件表达式 1
-    then
-      语句块 1
-  elif 条件表达式 2
-    then
-      语句快 2
-  ......
-  else
-      语句块
-  fi
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;section-7&quot;&gt;循环&lt;/h2&gt;
-
-&lt;h4 id=&quot;for&quot;&gt;for循环&lt;/h4&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;for 变量 in 列表
-do
-  语句块
-done
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;输出1+2+…+100&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sum=0
-for i in {1..100}
-do
-  sum=$(($sum+i))
-done
-echo $sum
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;{start..end..step}产生一个列表&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;打印当前目录下所有文件名&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;for i in `ls`
-do
-  echo $i
-done
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;打印所有输入参数&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;for i
-do
-  echo $i
-done
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;遍历数组&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array=(Mon Tue Wed Thu Fri Sat Sun)
-for day in ${array[*]}
-do
-  echo $day
-done
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;类C风格的for循环语句&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;for ((expression1;expression2;expression3))
-do
-  statement1
-  statement2
-  ......
-done
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;1加到100&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sum=0
-for ((i=1;i&amp;lt;=100;i++))
-do
-  sum=$[$sum+i]
-done
-echo $sum
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;while&quot;&gt;while循环&lt;/h4&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;while 条件表达式
-do
-  语句块
-done
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;输出1～9的平方&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;i=1
-while [ &quot;$i&quot; -lt 10 ]
-do
-  square=$[$i*$i]
-  echo $square
-  let &quot;i++&quot;
-done
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;continue和break控制循环&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;section-8&quot;&gt;函数&lt;/h2&gt;
-
-&lt;h4 id=&quot;section-9&quot;&gt;函数定义&lt;/h4&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  function 函数名()
-  {
-    语句块
-  }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;或者&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  函数名()
-  {
-    语句块
-  }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;函数调用&lt;/p&gt;
-
-    &lt;p&gt;函数名 [参数]&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;函数形参&lt;/p&gt;
-
-    &lt;p&gt;$1、$2、$3……&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;返回执行状态&lt;/p&gt;
-
-    &lt;p&gt;return：最后一条语句的执行状态返回&lt;/p&gt;
-
-    &lt;p&gt;return 0：返回成功执行&lt;/p&gt;
-
-    &lt;p&gt;return 1：返回错误执行信息&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;函数文件的调用&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;路径名 ./函数文件名&lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Thu, 17 Nov 2016 00:00:00 +0800</pubDate>
-        <link>/2016/11/17/Shell-note/</link>
-        <guid isPermaLink="true">/2016/11/17/Shell-note/</guid>
-        
-        <category>笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>排列组合</title>
-        <description>&lt;blockquote&gt;
-  &lt;ul&gt;
-    &lt;li&gt;&lt;em&gt;分类计数原理&lt;/em&gt;（加法原理）：互相独立&lt;/li&gt;
-    &lt;li&gt;&lt;em&gt;分步计数原理&lt;/em&gt;（乘法原理）：互相依存&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;一、特殊元素或特殊位置优先原则：&lt;/h2&gt;
-
-&lt;p&gt;位置分析法和元素分析法是解决排列组合问题最常用的也是最基本的方法，若以元素分析为主，需先安排特殊元素，再处理其他元素。若以位置分析为主，需先满足特殊位置要求，在处理其他位置。若有多个约束条件，往往是考虑一个约束条件的同时还要兼顾其他条件。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;7种不同的花种在排成一列的花盆里，若两种花不种在中间，也不种在两端，有多少种不同的种法？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  位置分析法：
-    先排特殊的C(4,1)*C(3,1)，然后一般的A(5,5)&lt;/p&gt;
-
-&lt;p&gt;元素分析法：
-    先排特殊的C(5,1)*C(4,1)*C(3,1)，然后一般A(4,4)&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;二、相邻元素捆绑策略&lt;/h2&gt;
-
-&lt;p&gt;要求某几个元素必须排在一起的问题，可以用捆绑法来解决问题：即将需要相邻的元素合并为一个元素，再与其他元素一起作排列，同时注意合并的元素内部页必须排列&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;某人射击8枪，命中4枪，4枪命中恰好有3枪连续的情况有多少种？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-首先对没有命中的4枪进行排序，因地位平等，只用一种排法，然后出入命中的情况，有A(5,2)种可能&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;三、不相邻问题插空策略&lt;/h2&gt;
-
-&lt;p&gt;元素相离问题克先把没有位置要求的元素进行排队然后再把不相邻元素进行插空&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;某班新年联欢会原定的5个节目已排成节目单，开演前又增加了两个新节目.如果将这两个新节目插入原节目单中，且两个新节目不相邻，那么不同插法的种数为？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：A(6,2)=30&lt;/p&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;四、定序问题倍缩空位插入策略&lt;/h2&gt;
-
-&lt;p&gt;定序问题可以用倍缩法，还可以转化为占位插&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;7人排队，甲乙丙3人顺序一定共有多少种排法？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  对于某几个元素顺序一定的问题（倍缩法）
-  用总排列数除以这几个元素之间的全排列：A(7,7)/A(3,3)&lt;/p&gt;
-
-&lt;p&gt;设想有7把椅子让除甲乙丙以外的四人坐，A(7,4)。其余三人顺序已经确定。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;五、重排问题求幂策略&lt;/h2&gt;
-
-&lt;p&gt;允许重复的排列问题的特定的以元素为研究对象，元素不受位置的约束，可以逐一安排各个元素的位置，一般地n不同元素没有限制的安排在m个位置上的排列数为m**n&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;某班新年联欢会原定的5个节目已排成节目单，开演前又增加了两个新节目.如果将这两个节目插 入原节目单中，那么不同插法的种数为6*7&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;section-5&quot;&gt;六、环排问题线排策略&lt;/h2&gt;
-
-&lt;p&gt;一般地,n个不同元素作圆形排列,共有(n-1)!种排法.如果从n个不同元素中取出m个元素作圆形排列共有A(n,m)/n&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;8人围桌而坐，共有多少种坐法？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  围桌而坐与坐成一排的不同的在于，坐成圆形没有首尾之分，所有固定一人并把圆形展成直线其余7人全排列共有7!&lt;/p&gt;
-
-&lt;h2 id=&quot;section-6&quot;&gt;七、多排问题纸牌策略&lt;/h2&gt;
-
-&lt;p&gt;一般地，元素分成多排的排列问题，可归结为一排考虑，再分段研究&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;8人排成前后两排，每排四人，其中甲乙在前排，丙在后排，共有多少排法？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  A(4,2)*A(4,1)*A(5,5)&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;有两排座位，前排11个，后排12个。现安排2人就座，规定前排中间的3个座位不能坐，并且这两人不相邻，那么不同的排法是多少种？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  将两人捆绑，A(2,2),共有A(3,1)+A(3,1)+A(11,1),可得34种排法（相邻做法），不相邻做法为A(20,2)-34=346&lt;/p&gt;
-
-&lt;h2 id=&quot;section-7&quot;&gt;八、排列组合混合问题先选后排策略&lt;/h2&gt;
-
-&lt;p&gt;解决排列组合混合问题，先选后排是最基本的指导思想。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;有5个不同的小球，装入4个不同的盒内，没盒至少装一个球，共有多少不同的装法？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  第一步从5个小球中选出2个组成复合元素共有C(5,2)，再把4个元素装入4个盒内，共有A(4,4)种方法，故有C(5,2)*A(4,4)&lt;/p&gt;
-
-&lt;h2 id=&quot;section-8&quot;&gt;九、小集团问题先整体后局部策略&lt;/h2&gt;
-
-&lt;p&gt;小集团排列问题中，先整体后局部，再结合其他策略处理&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;用1,2,3,4,5组成没有重复数字的五位数其中恰有两个偶数夹在1,5两个奇数之间，这样的五位数有多少个？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  把1,5,2,4当作一个小集团与3有A(2,2)种排法，再排小集团内部共有A(2,2)*A(2,2)种排法，分步计数原理共有A(2,2)*A(2,2)*A(2,2)种排法&lt;/p&gt;
-
-&lt;h2 id=&quot;section-9&quot;&gt;十、元素相同问题隔板策略&lt;/h2&gt;
-
-&lt;p&gt;将n个相同的元素分成m份，每份至少一个元素，可以用m-1块板，将n个元素排成一排的n-1个空隙中，所有分法数为C(n-1,m-1)&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;有10个运动员名额，分给7个班，每班至少一个，有多少种分配方法？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  插空，9个空位，6块隔板，C(9,6)&lt;/p&gt;
-
-&lt;h2 id=&quot;section-10&quot;&gt;十一、正难则反总体淘汰策略&lt;/h2&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;从0,1,2,3,4,5,6,7,8,9十个数字中取出三个数，使其和为不小于10的偶数，不同的取法有多少种？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  所取的三个数含有3个偶数的取法共有C(5,3)，只含有一个偶数的取法有C(5,1)*C(5,2),和为偶数的取法共有C(5,1)*C(5,2)+C(5,3)。再淘汰和小于10的偶数共9种，符合条件的取法共有C(5,1)*C(5,2)+C(5,3)-9&lt;/p&gt;
-
-&lt;h2 id=&quot;section-11&quot;&gt;十二、平均分组问题除法策略&lt;/h2&gt;
-
-&lt;p&gt;平均分成的组，不管它们的顺序如何，都是一种情况，所以分组后一定要除以A(n,n)（n为均分的组数）避免重复计数&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;6本不同的书平均分为3堆，每堆2本共有多少分法？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  分三步取书得C(6,2)*C(4,2)*C(2,2)种方法，但这里存在均分，故需要除以A(3,3),固有C(6,2)*C(4,2)*C(2,2)/A(3,3)&lt;/p&gt;
-
-&lt;h2 id=&quot;section-12&quot;&gt;十三、合理分类与分步策略&lt;/h2&gt;
-
-&lt;p&gt;解含有约束条件的排列组合问题，可按元素的性质进行分类，按事件发生的连续过程分步，做到标准明确。分步层次清楚，不重不漏，分类标准一旦确定要贯穿于解题过程的始终。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在一次演唱会上共10名演员，其中8人能唱歌，5人能跳舞，现要演出一个2人唱歌2人伴舞的节目，有多少选派方法？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  10演员中3人只会唱歌，2人只会跳舞3人为全能演员。选上唱歌人员为标准进行研究只会唱歌的5人没有选上唱歌人员共有C(3,2)*C(3,2)，只会唱的5人1人被选上的有(5,1)*C(3,1)*C(4,2)只会唱的5人中选中2人唱歌的选法有C(5,2)*C(5,2),全部相加为总共方法。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-13&quot;&gt;十四、构造模型策略&lt;/h2&gt;
-
-&lt;p&gt;一些不易理解的排列组合如果能转化为非常熟悉的模型，如占位填空模型，排队模型，装盒模型，可使问题更直观解决&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;马路上有九盏灯，现要关掉其中的3盏，但不能关掉相邻的2盏和两端的2盏，求满足条件的关灯方法？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  把此问题当作一个排队模型在6盏亮灯的5个空隙中插入3个不亮的灯有C(5,3)种&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;某排共10个座位，若4人就座，每人两端都有空位，有多少不同的坐法？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：&lt;br /&gt;
-  6个座位，插5空，C(5,4),4人排队A(4,4),分步计数，120&lt;/p&gt;
-
-&lt;h2 id=&quot;section-14&quot;&gt;十五、实际操作穷举策略&lt;/h2&gt;
-
-&lt;p&gt;对于条件比较复杂的排列组合问题，不易用公式进行计算，往往利用穷举法或画出树状图会有意想不到的结果&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;设有编号1,2,3,4,5的五个球和编号1,2,3,4,5的五个盒子，现将5个球投入5个盒内，每个盒子放一个球，并且恰好有两个球的编号与盒子的编号相同，有多少种投法？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  先选A(5,2),再排2种，总共2*A(5,2)&lt;/p&gt;
-
-&lt;h2 id=&quot;section-15&quot;&gt;十六、分解与合成策略&lt;/h2&gt;
-
-&lt;p&gt;分解与合成策略是排列组合问题的一种基本的解题策略，把一个复杂的问题分解为几个小问题逐一解决，然后依据问题分解后的结构，有分类计数原理和分步计数原理将问题合成，从而得到问题的答案。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;30030能被多少个不同的偶数整除&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  30030=2&lt;em&gt;3&lt;/em&gt;5&lt;em&gt;7&lt;/em&gt;11*13,必取2，再取其他，故为C(5,1)+C(5,2)+C(5,3)+C(5,4)+C(5,5)&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;正方体的8个顶点可连成多少对异面直线？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  从8个顶点中任取4个构成四体共有体共C(8,4)-12=58，每个四面体有3对异面直线，故总共有174对异面直线&lt;/p&gt;
-
-&lt;h2 id=&quot;section-16&quot;&gt;十七、化归策略&lt;/h2&gt;
-
-&lt;p&gt;处理复杂的排列组合问题可以把一个问题退化成一个简单的问题，通过这个简单的问题的解决找到解题方法，从而下一步解决原来的问题&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;25人排成5X5方阵，现从中选3人，要求3人不同行不同列，不同的选法有多少种？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  将问题退化成3x3方阵选3人再在5x5方阵选3x3方阵。前者C(3,1)*C(2,1)*C(1,1),后者有C(5,3)*C(5,3)&lt;/p&gt;
-
-&lt;h2 id=&quot;section-17&quot;&gt;十八、数字排序问题查字典策略&lt;/h2&gt;
-
-&lt;p&gt;数字排序问题可用查字典法，查字典的法应从高位向地位查，依次求出其符合要求的个数，根据分类计数原理求出总数&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;由0,1,2,3,4,5六个数字可以组成多少个没有重复的比324105大的数？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;答：
-  2&lt;em&gt;A(5,5)+2&lt;/em&gt;A(4,4)+A(3,3)+A(2,2)+A(1,1)&lt;/p&gt;
-
-&lt;h2 id=&quot;section-18&quot;&gt;十九、树图策略&lt;/h2&gt;
-
-&lt;h2 id=&quot;section-19&quot;&gt;二十、复杂问题分类表格策略&lt;/h2&gt;
-</description>
-        <pubDate>Thu, 13 Oct 2016 00:00:00 +0800</pubDate>
-        <link>/2016/10/13/Permutation-combination/</link>
-        <guid isPermaLink="true">/2016/10/13/Permutation-combination/</guid>
-        
-        <category>笔记</category>
         
         
       </item>

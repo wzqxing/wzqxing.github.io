@@ -154,6 +154,61 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/08/01/compress2/">
+        <h2 class="post-title">
+            文件压缩器（二）
+        </h2>
+        
+        <h3 class="post-subtitle">
+            转码表生成及细节
+        </h3>
+        
+        <div class="post-content-preview">
+            小根堆
+
+前面说了，构建赫夫曼树要借住小根堆。小根堆是用数组存储的完全二叉树,结构定义如下:
+
+typedef struct min_heap {
+	huffman_node *val[MAX_SIZE];
+	int size;
+} min_heap;
+
+
+
+它存储的是赫夫曼树结点的指针，用结点的frenquency来比较大小确定结构。此数据结构最重要的一个成员函数是heapify()，此函...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 沉默者说 on August 1, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/07/31/compress1/">
+        <h2 class="post-title">
+            文件压缩器（一）
+        </h2>
+        
+        <h3 class="post-subtitle">
+            赫夫曼编码和压缩器的主要结构
+        </h3>
+        
+        <div class="post-content-preview">
+            原理
+
+计算机给我们提供的磁盘文件模型和内存模型是不同的：前者是将文件看作一个流来使用，用文件偏移量来寻址;而内存是通过线性地址寻址。磁盘的管理是以文件为单位管理，其与进程的交互主要集中在文件上，而内存与进程联系紧密，进程定义的数据结构存储在内存中。
+
+赫夫曼编码是一种变长编码方式，对于出现频率高的字符，它编码后占据的位数少，而很少出现的字符，编码后占据的位数多。一般来讲，一个文件的字符出现...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 沉默者说 on July 31, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/07/21/encapsulation_and_interface/">
         <h2 class="post-title">
             程序思想：封装与接口
@@ -418,74 +473,6 @@ typedef struct
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2016/11/17/Shell-note/">
-        <h2 class="post-title">
-            shell编程笔记
-        </h2>
-        
-        <h3 class="post-subtitle">
-            
-        </h3>
-        
-        <div class="post-content-preview">
-            Catalog
-
-1、shell变量
-
-2、shell流程控制
-
-shell变量
-
-变量
-
-shell变量是动态类型，使用前无需先声明定义；shell是弱类型语言，可以将任何类型的值赋给同一变量名。准确的说，shell变量统一的按照字符串存储，但是根据变量的上下文环境，允许程序执行一些不同的操作，例如字符串的比较和整数的加减等。
-
-例子：
-
-#!/bin/bash
-x=123
-let "x ...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 沉默者说 on November 17, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/10/13/Permutation-combination/">
-        <h2 class="post-title">
-            排列组合
-        </h2>
-        
-        <h3 class="post-subtitle">
-            复习以及排列组合问题的一些基本问题
-        </h3>
-        
-        <div class="post-content-preview">
-            
-  
-    分类计数原理（加法原理）：互相独立
-    分步计数原理（乘法原理）：互相依存
-  
-
-
-一、特殊元素或特殊位置优先原则：
-
-位置分析法和元素分析法是解决排列组合问题最常用的也是最基本的方法，若以元素分析为主，需先安排特殊元素，再处理其他元素。若以位置分析为主，需先满足特殊位置要求，在处理其他位置。若有多个约束条件，往往是考虑一个约束条件的同时还要兼顾其他条件。
-
-
-  7种...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 沉默者说 on October 13, 2016
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -535,6 +522,12 @@ let "x ...
                                 </a>
                             
                         
+                            
+                        
+                            
+                                <a href="/tags/#项目：文件压缩器" title="项目：文件压缩器" rel="2">
+                                    项目：文件压缩器
+                                </a>
                             
                         
                     </div>
